@@ -3,192 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星露谷物语：播种与规划 (道具商店版)</title>
+    <title>星露谷物语：播种与规划</title>
     <style>
         :root {
-            --stardew-brown: #8b5a2b;
-            --stardew-soil: #b88b5a;
-            --stardew-light-soil: #d4a777;
-            --stardew-bg: #f0e8d1;
-            --stardew-container-bg: #f7f2e4;
-            --stardew-text: #513a2c;
-            --stardew-green: #78a233;
-            --stardew-highlight: #fdeca6;
+            --stardew-brown: #8b5a2b; --stardew-soil: #b88b5a;
+            --stardew-soil-watered: #96693c; --stardew-light-soil: #d4a777;
+            --stardew-light-soil-watered: #ab8457; --stardew-bg: #f0e8d1;
+            --stardew-container-bg: #f7f2e4; --stardew-text: #513a2c;
+            --stardew-green: #78a233; --stardew-highlight: #fdeca6;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--stardew-bg);
-            color: var(--stardew-text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            user-select: none;
+            background-color: var(--stardew-bg); color: var(--stardew-text);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0; user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         #game-container {
-            position: relative;
-            text-align: center;
+            position: relative; text-align: center;
             background-color: var(--stardew-container-bg);
-            padding: 15px;
-            border-radius: 15px;
+            padding: 15px; border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             border: 5px solid var(--stardew-brown);
-            margin: 15px;
-            width: fit-content;
+            margin: 15px; width: fit-content;
         }
 
-        h1 {
-            color: #6a4f4b;
-            margin-top: 0;
-            font-size: 1.8em;
-        }
+        h1 { color: #6a4f4b; margin-top: 0; font-size: 1.8em; }
         
         #instructions {
-            margin: -10px 0 15px 0;
-            padding: 8px;
+            margin: -10px 0 15px 0; padding: 8px;
             background-color: var(--stardew-bg);
-            border-radius: 5px;
-            border: 1px dashed var(--stardew-brown);
+            border-radius: 5px; border: 1px dashed var(--stardew-brown);
             min-height: 40px;
         }
         
         #instructions strong { color: var(--stardew-green); }
 
         #status-bar {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin: 15px 0;
-            font-size: 1.0em;
-            font-weight: bold;
+            display: flex; justify-content: space-around;
+            align-items: center; margin: 15px 0;
+            font-size: 1.0em; font-weight: bold;
         }
         
-        #gold-display {
-            display: flex;
-            align-items: center;
-        }
-
-        #gold-display img {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-        }
+        #gold-display { display: flex; align-items: center; }
+        #gold-display img { width: 20px; height: 20px; margin-right: 8px; }
         
         #conveyor-belt-container {
-            background-color: #c4a782;
-            padding: 10px;
-            border-radius: 10px;
-            margin: 0 auto 20px auto;
+            background-color: #c4a782; padding: 10px;
+            border-radius: 10px; margin: 0 auto 20px auto;
             border: 2px solid var(--stardew-brown);
-            display: grid;
-            grid-template-rows: repeat(2, 35px);
+            display: grid; grid-template-rows: repeat(2, 35px);
             grid-template-columns: repeat(8, 35px);
-            gap: 5px;
-            align-items: center;
-            justify-content: center;
-            width: fit-content;
+            gap: 5px; align-items: center;
+            justify-content: center; width: fit-content;
         }
         
-        #conveyor-belt {
-            display: contents;
-        }
+        #conveyor-belt { display: contents; }
 
         .seed-packet {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 5px;
-            background-color: #eaddc7;
+            width: 30px; height: 30px;
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 5px; background-color: #eaddc7;
             border: 2px solid var(--stardew-brown);
-            cursor: pointer;
-            transition: all 0.2s;
-            flex-shrink: 0;
-            font-size: 24px;
+            cursor: pointer; transition: all 0.2s;
+            flex-shrink: 0; font-size: 24px;
         }
         .seed-packet.selected {
             background-color: var(--stardew-highlight);
-            transform: scale(1.15);
-            box-shadow: 0 0 10px #ffbf00;
+            transform: scale(1.15); box-shadow: 0 0 10px #ffbf00;
         }
 
         #farm-grid {
             display: grid;
             grid-template-columns: repeat(6, 50px);
             grid-template-rows: repeat(6, 50px);
-            gap: 4px;
-            background-color: var(--stardew-brown);
+            gap: 4px; background-color: var(--stardew-brown);
             border: 4px solid var(--stardew-brown);
-            padding: 0;
-            border-radius: 10px;
-            cursor: default;
-            margin-left: auto;
-            margin-right: auto;
-            touch-action: none;
+            padding: 0; border-radius: 10px;
+            cursor: default; margin-left: auto;
+            margin-right: auto; touch-action: none;
             width: calc(6 * 50px + 5 * 4px);
             box-sizing: content-box;
         }
         
-        /* 当有道具激活时，改变农田格子的鼠标指针 */
-        .tool-active #farm-grid .cell {
-            cursor: cell !important; /* 使用一个表示单元格选择的指针 */
-        }
-        
+        .tool-active #farm-grid .cell { cursor: cell !important; }
         .harvesting-phase .cell.edge { cursor: pointer; }
 
         .cell {
-            width: 50px;
-            height: 50px;
+            width: 50px; height: 50px;
             background-color: var(--stardew-soil);
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            position: relative;
+            border-radius: 5px; display: flex;
+            justify-content: center; align-items: center;
+            font-size: 30px; position: relative;
+            transition: background-color 0.3s ease;
         }
-        
-        .cell.empty.planting-phase:hover {
-            cursor: pointer;
-            background-color: var(--stardew-light-soil);
-        }
-        
-        .cell.path {
-            background-color: var(--stardew-highlight) !important;
-            opacity: 0.8;
-        }
+
+        .cell.watered { background-color: var(--stardew-soil-watered); }
+        .cell.empty.planting-phase:hover { cursor: pointer; background-color: var(--stardew-light-soil); }
+        .cell.path { background-color: var(--stardew-highlight) !important; opacity: 0.8; }
         
         /* 您的自定义修改：保持此部分注释状态 */
         /*
-        .cell.edge { 
-            background-color: var(--stardew-light-soil); 
-        }
+        .cell.edge { background-color: var(--stardew-light-soil); }
+        .cell.edge.watered { background-color: var(--stardew-light-soil-watered); }
         */
 
         .crop-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* animation: plant-pop 0.3s ease-out; */ /* 您的自定义修改：保持动画应用注释 */
+            width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            /* animation: plant-pop 0.3s ease-out; */
             pointer-events: none;
         }
         .crop-container.mature {
             transform: scale(1.1);
-            /* 您的自定义修改：保持此部分注释状态 */
-            /*
-            border: 2px solid var(--stardew-highlight); 
-            */
+            /* border: 2px solid var(--stardew-highlight); */
             box-sizing: border-box;
         }
         
-        /* 您的自定义修改：保持此部分注释状态 */
         /*
         @keyframes plant-pop {
             from { transform: scale(0.5); }
@@ -214,60 +147,45 @@
         #action-btn:disabled { background-color: #a0a0a0; cursor: not-allowed; }
         #action-btn:hover:not(:disabled) { background-color: #8bc34a; }
         
-        .seed-packet img, .crop-container img {
+        .seed-packet img, .crop-container img, .sprinkler-img {
             max-width: 100%; max-height: 100%;
             object-fit: contain; image-rendering: pixelated;
             image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;
         }
 
-        /* === 商店系统样式调整 === */
         #shop-container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
+            margin-top: 20px; display: flex;
+            justify-content: center; gap: 15px;
         }
         .shop-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #e0ecd0;
-            padding: 8px; /* 略微减小内边距 */
-            border-radius: 8px;
+            display: flex; flex-direction: column;
+            align-items: center; background-color: #e0ecd0;
+            padding: 8px; border-radius: 8px;
             border: 2px solid var(--stardew-brown);
-            cursor: pointer;
-            transition: all 0.2s ease;
+            cursor: pointer; transition: all 0.2s ease;
         }
-        .shop-item:hover {
-            background-color: var(--stardew-highlight);
-        }
+        .shop-item:hover { background-color: var(--stardew-highlight); }
         .shop-item.selected {
             background-color: var(--stardew-highlight);
             box-shadow: 0 0 10px #ffbf00;
         }
         .shop-item.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            opacity: 0.5; cursor: not-allowed;
             background-color: #ccc;
         }
         .shop-item img {
-            width: 24px; /* 修改点：缩小图标尺寸 */
-            height: 24px; /* 修改点：保证正方形 */
+            width: 24px; height: 24px;
             image-rendering: pixelated;
         }
         .item-cost {
-            margin-top: 5px;
-            font-weight: bold;
-            font-size: 0.9em; /* 道具价格字体也略微缩小 */
-            display: flex;
+            margin-top: 5px; font-weight: bold;
+            font-size: 0.9em; display: flex;
             align-items: center;
         }
         .item-cost img {
-            width: 10px; /* 道具价格旁边的金币图标也相应缩小 */
-            height: 10px;
+            width: 10px; height: 10px;
             margin-left: 3px;
         }
-        /* ======================== */
     </style>
 </head>
 <body>
@@ -287,7 +205,6 @@
             <div id="conveyor-belt"></div>
         </div>
         <div id="farm-grid"></div>
-
         <div id="shop-container">
             <div class="shop-item" data-tool="hoe">
                 <img src="pic/Hoe.png" alt="锄头">
@@ -298,7 +215,6 @@
                 <div class="item-cost">150<img src="pic/Gold.png"></div>
             </div>
         </div>
-
         <button id="action-btn">完成播种</button>
     </div>
     
@@ -308,11 +224,15 @@
     </div>
 
     <script>
-        const USE_EMOJI_MODE = false;
-        const GRID_SIZE = 6;
-        const MAX_SEEDS = 16;
-        const SEEDS_PER_DAY = 10;
-        
+        // --- 游戏设置与常量 ---
+        const USE_EMOJI_MODE = false; // 全局开关：设置为 true 使用Emoji，设置为 false 使用图片
+        const GRID_SIZE = 6; // 网格大小
+        const MAX_SEEDS = 16; // 最大种子数
+        const SEEDS_PER_DAY = 10; // 每日新增种子数
+        const SPRINKLER_CHANCE = 0.2; // 洒水器每日出现概率
+        const SPRINKLER_DAY = 5; // 从第几天后开始可能出现洒水器
+
+        // --- 数据定义 ---
         const CROP_TYPES = [ 
             { id: 'parsnip', emoji: '🤍', goldValue: 35, img_seed: 'pic/Parsnip_Seeds.png', img_stage_0: 'pic/Parsnip_Stage_1.png', img_stage_1: 'pic/Parsnip_Stage_4.png', img_mature: 'pic/Parsnip.png' },
             { id: 'potato', emoji: '🥔', goldValue: 80, img_seed: 'pic/Potato_Seeds.png', img_stage_0: 'pic/Potato_Stage_1.png', img_stage_1: 'pic/Potato_Stage_4.png', img_mature: 'pic/Potato.png' },
@@ -320,13 +240,12 @@
             { id: 'pumpkin', emoji: '🎃', goldValue: 320, img_seed: 'pic/Pumpkin_Seeds.png', img_stage_0: 'pic/Pumpkin_Stage_1.png', img_stage_1: 'pic/Pumpkin_Stage_4.png', img_mature: 'pic/Pumpkin.png' },
             { id: 'strawberry', emoji: '🍓', goldValue: 120, img_seed: 'pic/Strawberry_Seeds.png', img_stage_0: 'pic/Strawberry_Stage_1.png', img_stage_1: 'pic/Strawberry_Stage_4.png', img_mature: 'pic/Strawberry.png' },
         ];
-
-        // 新增：商店道具数据
         const SHOP_ITEMS = {
             hoe: { name: '锄头', cost: 1000 },
             'speed-gro': { name: '高级生长激素', cost: 150 }
         };
 
+        // --- 游戏状态变量 ---
         let farmGrid = [], conveyorSeeds = [], currentDay = 1;
         let gameState = {
             phase: 'PLANTING',
@@ -337,6 +256,7 @@
             activeTool: null,
         };
 
+        // --- DOM元素获取 ---
         const gridElement = document.getElementById('farm-grid');
         const conveyorElement = document.getElementById('conveyor-belt');
         const dayCounterElement = document.getElementById('day-counter');
@@ -347,12 +267,15 @@
         const goldAmountElement = document.getElementById('gold-amount');
         const shopContainer = document.getElementById('shop-container');
 
+        // --- 核心游戏逻辑 ---
         function initGame() {
             gridElement.innerHTML = '';
+            farmGrid = [];
             for (let r = 0; r < GRID_SIZE; r++) {
                 farmGrid[r] = [];
                 for (let c = 0; c < GRID_SIZE; c++) {
-                    farmGrid[r][c] = null;
+                    // 修改点：地块数据结构增加 hasSprinkler 属性
+                    farmGrid[r][c] = { crop: null, isWatered: false, hasSprinkler: false };
                     const cell = document.createElement('div');
                     cell.classList.add('cell');
                     cell.dataset.row = r;
@@ -387,7 +310,7 @@
             } else if (newPhase === 'HARVESTING') {
                 actionBtn.textContent = '收获路径';
                 actionBtn.disabled = true;
-                instructionsElement.innerHTML = "<strong>阶段二：收获</strong><br>在农田外圈按住并拖动，画出收获路径。";
+                instructionsElement.innerHTML = "<strong>阶段二：收获/浇水</strong><br>拖动规划路径以收获作物并为土地浇水。";
                 shopContainer.style.display = 'none';
             } else if (newPhase === 'DAY_END') {
                 actionBtn.textContent = '开启新的一天';
@@ -408,16 +331,25 @@
             gridElement.childNodes.forEach((cell, index) => {
                 const r = Math.floor(index / GRID_SIZE);
                 const c = index % GRID_SIZE;
-                const crop = farmGrid[r][c];
+                const tile = farmGrid[r][c];
+                const crop = tile.crop;
+
                 cell.innerHTML = '';
                 cell.classList.remove('path');
-                cell.classList.toggle('empty', crop === null);
+                cell.classList.toggle('empty', crop === null && !tile.hasSprinkler);
+                cell.classList.toggle('watered', tile.isWatered);
 
                 if (gameState.currentPath.some(p => p.r === r && p.c === c)) {
                     cell.classList.add('path');
                 }
 
-                if (crop) {
+                // 修改点：新增洒水器渲染逻辑
+                if (tile.hasSprinkler) {
+                    const sprinklerImg = document.createElement('img');
+                    sprinklerImg.src = 'pic/Quality_Sprinkler.png';
+                    sprinklerImg.classList.add('sprinkler-img'); // 可选，方便未来添加特定样式
+                    cell.appendChild(sprinklerImg);
+                } else if (crop) { // 只有在没有洒水器的情况下才渲染作物
                     const cropDiv = document.createElement('div');
                     cropDiv.classList.add('crop-container');
                     
@@ -541,7 +473,7 @@
             const toolData = SHOP_ITEMS[toolId];
             const r = parseInt(cell.dataset.row);
             const c = parseInt(cell.dataset.col);
-            const crop = farmGrid[r][c];
+            const tile = farmGrid[r][c];
 
             if (gameState.gold < toolData.cost) {
                 alert('金币不足!');
@@ -551,14 +483,14 @@
             let toolUsed = false;
             switch (toolId) {
                 case 'hoe':
-                    if (crop) {
-                        farmGrid[r][c] = null;
+                    if (tile.crop) {
+                        tile.crop = null;
                         toolUsed = true;
                     }
                     break;
                 case 'speed-gro':
-                    if (crop && crop.daysToMature > 0) {
-                        crop.daysToMature--;
+                    if (tile.crop && tile.crop.daysToMature > 0) {
+                        tile.crop.daysToMature--;
                         toolUsed = true;
                     }
                     break;
@@ -585,11 +517,13 @@
         }
 
         function handlePlantingClick(cell) {
-            if (gameState.selectedSeedIndex === null || !cell.classList.contains('empty')) return;
             const r = parseInt(cell.dataset.row);
             const c = parseInt(cell.dataset.col);
+            // 修改点：增加对洒水器的判断
+            if (gameState.selectedSeedIndex === null || farmGrid[r][c].crop !== null || farmGrid[r][c].hasSprinkler) return;
+            
             const seedToPlant = conveyorSeeds[gameState.selectedSeedIndex];
-            farmGrid[r][c] = { ...seedToPlant, daysToMature: 2 };
+            farmGrid[r][c].crop = { ...seedToPlant, daysToMature: 2 };
             conveyorSeeds.splice(gameState.selectedSeedIndex, 1);
             gameState.selectedSeedIndex = null;
             updateUI();
@@ -621,8 +555,13 @@
                 targetCell = e.target.closest('.cell');
             }
             if (!targetCell) return;
+            
             const r = parseInt(targetCell.dataset.row);
             const c = parseInt(targetCell.dataset.col);
+
+            // 修改点：路径不能经过有洒水器的地块
+            if (farmGrid[r][c].hasSprinkler) return;
+
             const lastPos = gameState.currentPath[gameState.currentPath.length - 1];
             const isAdjacent = (Math.abs(r - lastPos.r) === 1 && c === lastPos.c) || (Math.abs(c - lastPos.c) === 1 && r === lastPos.r);
             const isNotVisited = !gameState.currentPath.some(p => p.r === r && p.c === c);
@@ -649,6 +588,10 @@
         }
 
         function finalizeHarvestPath() {
+            gameState.currentPath.forEach(pos => {
+                farmGrid[pos.r][pos.c].isWatered = true;
+            });
+            
             harvestCropsByPath(gameState.currentPath);
             setTimeout(() => {
                 updatePhase('DAY_END');
@@ -665,9 +608,9 @@
                 }
             }
             for (const pos of path) {
-                const crop = farmGrid[pos.r][pos.c];
-                const chainCrop = chain.length > 0 ? farmGrid[chain[0].r][chain[0].c] : null;
-                if (crop && crop.daysToMature === 0 && (chain.length === 0 || crop.id === chainCrop.id)) {
+                const crop = farmGrid[pos.r][pos.c].crop;
+                const firstChainCrop = chain.length > 0 ? farmGrid[chain[0].r][chain[0].c].crop : null;
+                if (crop && crop.daysToMature === 0 && (chain.length === 0 || crop.id === firstChainCrop.id)) {
                     chain.push(pos);
                 } else {
                     checkChain();
@@ -678,24 +621,74 @@
             
             toHarvest.forEach(posString => {
                 const [r, c] = posString.split('-').map(Number);
-                const harvestedCrop = farmGrid[r][c];
+                const harvestedCrop = farmGrid[r][c].crop;
                 if (harvestedCrop) {
                     gameState.gold += harvestedCrop.goldValue;
                 }
-                farmGrid[r][c] = null;
+                farmGrid[r][c].crop = null;
             });
             updateGoldDisplay();
+        }
+
+        // 新增：洒水器自动浇水逻辑
+        function applySprinklerWatering() {
+            const sprinklerLocations = [];
+            // 首先找到所有洒水器的位置
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (farmGrid[r][c].hasSprinkler) {
+                        sprinklerLocations.push({ r, c });
+                    }
+                }
+            }
+            // 然后为每个洒水器周围的格子浇水
+            sprinklerLocations.forEach(pos => {
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        if (dr === 0 && dc === 0) continue; // 跳过洒水器自身
+                        const nr = pos.r + dr;
+                        const nc = pos.c + dc;
+                        if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE) {
+                            farmGrid[nr][nc].isWatered = true;
+                        }
+                    }
+                }
+            });
         }
 
         function startNewDay() {
             currentDay++;
             for (let r = 0; r < GRID_SIZE; r++) {
                 for (let c = 0; c < GRID_SIZE; c++) {
-                    if (farmGrid[r][c] && farmGrid[r][c].daysToMature > 0) {
-                        farmGrid[r][c].daysToMature--;
+                    const tile = farmGrid[r][c];
+                    if (tile.crop && tile.crop.daysToMature > 0 && tile.isWatered) {
+                        tile.crop.daysToMature--;
                     }
+                    tile.isWatered = false; // 每天开始时，所有土地先变干燥
                 }
             }
+
+            // --- 新增：洒水器出现和自动浇水逻辑 ---
+            // 1. 检查是否可能出现新洒水器
+            if (currentDay > SPRINKLER_DAY && Math.random() < SPRINKLER_CHANCE) {
+                const validSpots = [];
+                // 只在中间的4x4区域寻找空地
+                for (let r = 1; r < GRID_SIZE - 1; r++) {
+                    for (let c = 1; c < GRID_SIZE - 1; c++) {
+                        if (farmGrid[r][c].crop === null && !farmGrid[r][c].hasSprinkler) {
+                            validSpots.push({ r, c });
+                        }
+                    }
+                }
+                if (validSpots.length > 0) {
+                    const spot = validSpots[Math.floor(Math.random() * validSpots.length)];
+                    farmGrid[spot.r][spot.c].hasSprinkler = true;
+                }
+            }
+            // 2. 应用所有洒水器的浇水效果
+            applySprinklerWatering();
+            // ------------------------------------
+
             addNewSeeds();
             if (conveyorSeeds.length > MAX_SEEDS) {
                 gameOver();
