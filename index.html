@@ -1,203 +1,304 @@
-<!DOCTYPE html> 
-<html lang="zh-CN"> 
-<head> 
-<meta charset="UTF-8"> 
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-<title>星露谷物语：播种与规划 (Emoji模式开关版)</title> 
-<style> 
-        :root { 
-            --stardew-brown: #8b5a2b; 
-            --stardew-soil: #b88b5a; 
-            --stardew-light-soil: #d4a777; 
-            --stardew-bg: #f0e8d1; 
-            --stardew-container-bg: #f7f2e4; 
-            --stardew-text: #513a2c; 
-            --stardew-green: #78a233; 
-            --stardew-highlight: #fdeca6; 
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>星露谷物语：播种与规划 (道具商店版)</title>
+    <style>
+        :root {
+            --stardew-brown: #8b5a2b;
+            --stardew-soil: #b88b5a;
+            --stardew-light-soil: #d4a777;
+            --stardew-bg: #f0e8d1;
+            --stardew-container-bg: #f7f2e4;
+            --stardew-text: #513a2c;
+            --stardew-green: #78a233;
+            --stardew-highlight: #fdeca6;
         }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
-            background-color: var(--stardew-bg); 
-            color: var(--stardew-text); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            user-select: none; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--stardew-bg);
+            color: var(--stardew-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        #game-container { 
-            text-align: center; 
-            background-color: var(--stardew-container-bg); 
-            padding: 20px; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
-            border: 5px solid var(--stardew-brown); 
-            margin: 20px 0; 
+        #game-container {
+            position: relative;
+            text-align: center;
+            background-color: var(--stardew-container-bg);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 5px solid var(--stardew-brown);
+            margin: 15px;
+            width: fit-content;
         }
 
-        h1 { color: #6a4f4b; margin-top: 0; } 
-        
-        #instructions { 
-            margin: -10px 0 15px 0; 
-            padding: 8px; 
-            background-color: var(--stardew-bg); 
-            border-radius: 5px; 
-            border: 1px dashed var(--stardew-brown); 
-            min-height: 40px; 
+        h1 {
+            color: #6a4f4b;
+            margin-top: 0;
+            font-size: 1.8em;
         }
         
-        #instructions strong { color: var(--stardew-green); } 
-
-        #status-bar { 
-            display: flex; 
-            justify-content: space-around; 
-            margin: 15px 0; 
-            font-size: 1.2em; 
-            font-weight: bold; 
+        #instructions {
+            margin: -10px 0 15px 0;
+            padding: 8px;
+            background-color: var(--stardew-bg);
+            border-radius: 5px;
+            border: 1px dashed var(--stardew-brown);
+            min-height: 40px;
         }
         
-        #conveyor-belt-container { 
-            background-color: #c4a782; 
-            padding: 10px; 
-            border-radius: 10px; 
-            margin: 0 auto 20px auto; 
-            border: 2px solid var(--stardew-brown); 
-            display: grid; 
-            grid-template-rows: repeat(2, 35px); 
-            grid-template-columns: repeat(8, 35px); 
-            gap: 5px; 
-            align-items: center; 
-            justify-content: center; 
-            width: fit-content; 
+        #instructions strong { color: var(--stardew-green); }
+
+        #status-bar {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 1.0em;
+            font-weight: bold;
         }
         
-        #conveyor-belt { 
-            display: contents; 
+        #gold-display {
+            display: flex;
+            align-items: center;
         }
 
-        .seed-packet { 
-            width: 30px; 
-            height: 30px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            border-radius: 5px; 
-            background-color: #eaddc7; 
-            border: 2px solid var(--stardew-brown); 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            flex-shrink: 0; 
-            font-size: 24px; 
-        }
-        .seed-packet.selected { 
-            background-color: var(--stardew-highlight); 
-            transform: scale(1.15); 
-            box-shadow: 0 0 10px #ffbf00; 
-        }
-
-        #farm-grid { 
-            display: grid; 
-            grid-template-columns: repeat(6, 60px); 
-            grid-template-rows: repeat(6, 60px); 
-            gap: 4px; 
-            background-color: var(--stardew-brown); 
-            border: 4px solid var(--stardew-brown); 
-            padding: 4px; 
-            border-radius: 10px; 
-            cursor: default; 
-            margin-left: auto; 
-            margin-right: auto; 
-            touch-action: none; 
+        #gold-display img {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
         }
         
-        .harvesting-phase .cell.edge { cursor: pointer; } 
-
-        .cell { 
-            width: 60px; 
-            height: 60px; 
-            background-color: var(--stardew-soil); 
-            border-radius: 5px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            font-size: 36px; 
-            position: relative; 
+        #conveyor-belt-container {
+            background-color: #c4a782;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 0 auto 20px auto;
+            border: 2px solid var(--stardew-brown);
+            display: grid;
+            grid-template-rows: repeat(2, 35px);
+            grid-template-columns: repeat(8, 35px);
+            gap: 5px;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
         }
         
-        .cell.empty.planting-phase:hover { 
-            cursor: pointer; 
+        #conveyor-belt {
+            display: contents;
+        }
+
+        .seed-packet {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            background-color: #eaddc7;
+            border: 2px solid var(--stardew-brown);
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            font-size: 24px;
+        }
+        .seed-packet.selected {
+            background-color: var(--stardew-highlight);
+            transform: scale(1.15);
+            box-shadow: 0 0 10px #ffbf00;
+        }
+
+        #farm-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 50px);
+            grid-template-rows: repeat(6, 50px);
+            gap: 4px;
+            background-color: var(--stardew-brown);
+            border: 4px solid var(--stardew-brown);
+            padding: 0;
+            border-radius: 10px;
+            cursor: default;
+            margin-left: auto;
+            margin-right: auto;
+            touch-action: none;
+            width: calc(6 * 50px + 5 * 4px);
+            box-sizing: content-box;
+        }
+        
+        /* 当有道具激活时，改变农田格子的鼠标指针 */
+        .tool-active #farm-grid .cell {
+            cursor: cell !important; /* 使用一个表示单元格选择的指针 */
+        }
+        
+        .harvesting-phase .cell.edge { cursor: pointer; }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: var(--stardew-soil);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            position: relative;
+        }
+        
+        .cell.empty.planting-phase:hover {
+            cursor: pointer;
+            background-color: var(--stardew-light-soil);
+        }
+        
+        .cell.path {
+            background-color: var(--stardew-highlight) !important;
+            opacity: 0.8;
+        }
+        
+        /* 您的自定义修改：保持此部分注释状态 */
+        /*
+        .cell.edge { 
             background-color: var(--stardew-light-soil); 
         }
+        */
+
+        .crop-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* animation: plant-pop 0.3s ease-out; */ /* 您的自定义修改：保持动画应用注释 */
+            pointer-events: none;
+        }
+        .crop-container.mature {
+            transform: scale(1.1);
+            /* 您的自定义修改：保持此部分注释状态 */
+            /*
+            border: 2px solid var(--stardew-highlight); 
+            */
+            box-sizing: border-box;
+        }
         
-        .cell.path { 
-            background-color: var(--stardew-highlight) !important; 
-            opacity: 0.8; 
+        /* 您的自定义修改：保持此部分注释状态 */
+        /*
+        @keyframes plant-pop {
+            from { transform: scale(0.5); }
+            to { transform: scale(1); }
+        }
+        */
+        
+        #game-over-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+            font-size: 3em; z-index: 100;
+        }
+        
+        #action-btn {
+            padding: 10px 20px; font-size: 1.2em;
+            background-color: var(--stardew-green);
+            color: white; border: none; border-radius: 8px;
+            cursor: pointer; margin-top: 15px;
+            transition: background-color 0.2s; width: 200px;
+        }
+        #action-btn:disabled { background-color: #a0a0a0; cursor: not-allowed; }
+        #action-btn:hover:not(:disabled) { background-color: #8bc34a; }
+        
+        .seed-packet img, .crop-container img {
+            max-width: 100%; max-height: 100%;
+            object-fit: contain; image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;
         }
 
-        .crop-container { 
-            width: 100%; 
-            height: 100%; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            animation: plant-pop 0.3s ease-out; 
-            pointer-events: none; 
+        /* === 商店系统样式调整 === */
+        #shop-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
-        .crop-container.mature { 
-            transform: scale(1.1); 
-            box-sizing: border-box; 
+        .shop-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e0ecd0;
+            padding: 8px; /* 略微减小内边距 */
+            border-radius: 8px;
+            border: 2px solid var(--stardew-brown);
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-
-        #game-over-overlay { 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background-color: rgba(0, 0, 0, 0.7); 
-            color: white; 
-            display: none; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            font-size: 3em; 
-            z-index: 100; 
+        .shop-item:hover {
+            background-color: var(--stardew-highlight);
         }
-        
-        #action-btn { 
-            padding: 10px 20px; 
-            font-size: 1.2em; 
-            background-color: var(--stardew-green); 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            margin-top: 15px; 
-            transition: background-color 0.2s; 
-            width: 200px; 
+        .shop-item.selected {
+            background-color: var(--stardew-highlight);
+            box-shadow: 0 0 10px #ffbf00;
         }
-        #action-btn:disabled { background-color: #a0a0a0; cursor: not-allowed; } 
-        #action-btn:hover:not(:disabled) { background-color: #8bc34a; } 
-        
-        .seed-packet img, .crop-container img { 
-            max-width: 100%; 
-            max-height: 100%; 
-            object-fit: contain; 
-            image-rendering: pixelated; 
-            image-rendering: -moz-crisp-edges; 
-            image-rendering: crisp-edges; 
+        .shop-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #ccc;
         }
-    </style> </head> <body> <div id="game-container">
+        .shop-item img {
+            width: 24px; /* 修改点：缩小图标尺寸 */
+            height: 24px; /* 修改点：保证正方形 */
+            image-rendering: pixelated;
+        }
+        .item-cost {
+            margin-top: 5px;
+            font-weight: bold;
+            font-size: 0.9em; /* 道具价格字体也略微缩小 */
+            display: flex;
+            align-items: center;
+        }
+        .item-cost img {
+            width: 10px; /* 道具价格旁边的金币图标也相应缩小 */
+            height: 10px;
+            margin-left: 3px;
+        }
+        /* ======================== */
+    </style>
+</head>
+<body>
+    <div id="game-container">
         <h1>星露谷：播种与规划</h1>
         <div id="instructions"></div>
         <div id="status-bar">
             <div id="day-counter">第 1 天</div>
+            <div id="gold-display">
+                <img src="pic/Gold.png" alt="金币">
+                <span id="gold-amount">0</span>
+            </div>
             <div id="seed-counter">种子: 10/16</div>
         </div>
+        
         <div id="conveyor-belt-container">
             <div id="conveyor-belt"></div>
         </div>
         <div id="farm-grid"></div>
+
+        <div id="shop-container">
+            <div class="shop-item" data-tool="hoe">
+                <img src="pic/Hoe.png" alt="锄头">
+                <div class="item-cost">1000<img src="pic/Gold.png"></div>
+            </div>
+            <div class="shop-item" data-tool="speed-gro">
+                <img src="pic/Deluxe_Speed-Gro.png" alt="高级生长激素">
+                <div class="item-cost">150<img src="pic/Gold.png"></div>
+            </div>
+        </div>
+
         <button id="action-btn">完成播种</button>
     </div>
     
@@ -206,348 +307,408 @@
         <button onclick="location.reload()" style="margin-top: 20px; font-size: 0.5em; padding: 10px 20px;">重新开始</button>
     </div>
 
-    <script> 
-        const USE_EMOJI_MODE = false; 
-
-        const GRID_SIZE = 6; 
-        const MAX_SEEDS = 16; 
-        const SEEDS_PER_DAY = 10; 
+    <script>
+        const USE_EMOJI_MODE = false;
+        const GRID_SIZE = 6;
+        const MAX_SEEDS = 16;
+        const SEEDS_PER_DAY = 10;
         
         const CROP_TYPES = [ 
-            { 
-                id: 'parsnip', 
-                emoji: '🤍', 
-                img_seed: 'pic/Parsnip_Seeds.png', 
-                img_stage_0: 'pic/Parsnip_Stage_1.png', 
-                img_stage_1: 'pic/Parsnip_Stage_4.png', 
-                img_mature: 'pic/Parsnip.png'          
-            },
-            { 
-                id: 'potato', 
-                emoji: '🥔', 
-                img_seed: 'pic/Potato_Seeds.png', 
-                img_stage_0: 'pic/Potato_Stage_1.png', 
-                img_stage_1: 'pic/Potato_Stage_4.png', 
-                img_mature: 'pic/Potato.png' 
-            },
-            { 
-                id: 'cauliflower', 
-                emoji: '🥦', 
-                img_seed: 'pic/Broccoli_Seeds.png', 
-                img_stage_0: 'pic/Broccoli_Stage_1.png', 
-                img_stage_1: 'pic/Broccoli_Stage_4.png', 
-                img_mature: 'pic/Broccoli.png' 
-            },
-            { 
-                id: 'pumpkin', 
-                emoji: '🎃', 
-                img_seed: 'pic/Pumpkin_Seeds.png', 
-                img_stage_0: 'pic/Pumpkin_Stage_1.png', 
-                img_stage_1: 'pic/Pumpkin_Stage_4.png', 
-                img_mature: 'pic/Pumpkin.png' 
-            },
-            { 
-                id: 'strawberry', 
-                emoji: '🍓', 
-                img_seed: 'pic/Strawberry_Seeds.png', 
-                img_stage_0: 'pic/Strawberry_Stage_1.png', 
-                img_stage_1: 'pic/Strawberry_Stage_4.png', 
-                img_mature: 'pic/Strawberry.png'         
-            },
+            { id: 'parsnip', emoji: '🤍', goldValue: 35, img_seed: 'pic/Parsnip_Seeds.png', img_stage_0: 'pic/Parsnip_Stage_1.png', img_stage_1: 'pic/Parsnip_Stage_4.png', img_mature: 'pic/Parsnip.png' },
+            { id: 'potato', emoji: '🥔', goldValue: 80, img_seed: 'pic/Potato_Seeds.png', img_stage_0: 'pic/Potato_Stage_1.png', img_stage_1: 'pic/Potato_Stage_4.png', img_mature: 'pic/Potato.png' },
+            { id: 'cauliflower', emoji: '🥦', goldValue: 70, img_seed: 'pic/Broccoli_Seeds.png', img_stage_0: 'pic/Broccoli_Stage_1.png', img_stage_1: 'pic/Broccoli_Stage_4.png', img_mature: 'pic/Broccoli.png' },
+            { id: 'pumpkin', emoji: '🎃', goldValue: 320, img_seed: 'pic/Pumpkin_Seeds.png', img_stage_0: 'pic/Pumpkin_Stage_1.png', img_stage_1: 'pic/Pumpkin_Stage_4.png', img_mature: 'pic/Pumpkin.png' },
+            { id: 'strawberry', emoji: '🍓', goldValue: 120, img_seed: 'pic/Strawberry_Seeds.png', img_stage_0: 'pic/Strawberry_Stage_1.png', img_stage_1: 'pic/Strawberry_Stage_4.png', img_mature: 'pic/Strawberry.png' },
         ];
 
-        let farmGrid = [], conveyorSeeds = [], currentDay = 1; 
-        let gameState = { 
-            phase: 'PLANTING', 
-            selectedSeedIndex: null, 
-            isPathing: false, 
-            currentPath: [], 
+        // 新增：商店道具数据
+        const SHOP_ITEMS = {
+            hoe: { name: '锄头', cost: 1000 },
+            'speed-gro': { name: '高级生长激素', cost: 150 }
         };
 
-        const gridElement = document.getElementById('farm-grid'); 
-        const conveyorElement = document.getElementById('conveyor-belt'); 
-        const dayCounterElement = document.getElementById('day-counter'); 
-        const seedCounterElement = document.getElementById('seed-counter'); 
-        const actionBtn = document.getElementById('action-btn'); 
-        const gameOverOverlay = document.getElementById('game-over-overlay'); 
-        const instructionsElement = document.getElementById('instructions'); 
+        let farmGrid = [], conveyorSeeds = [], currentDay = 1;
+        let gameState = {
+            phase: 'PLANTING',
+            selectedSeedIndex: null,
+            isPathing: false,
+            currentPath: [],
+            gold: 0,
+            activeTool: null,
+        };
 
-        function initGame() { 
-            gridElement.innerHTML = ''; 
-            for (let r = 0; r < GRID_SIZE; r++) { 
-                farmGrid[r] = []; 
-                for (let c = 0; c < GRID_SIZE; c++) { 
-                    farmGrid[r][c] = null; 
-                    const cell = document.createElement('div'); 
-                    cell.classList.add('cell'); 
-                    cell.dataset.row = r; 
-                    cell.dataset.col = c; 
-                    if (r === 0 || r === GRID_SIZE - 1 || c === 0 || c === GRID_SIZE - 1) { 
-                        cell.classList.add('edge'); 
-                    } else { 
-                         cell.style.backgroundColor = 'var(--stardew-soil)'; 
+        const gridElement = document.getElementById('farm-grid');
+        const conveyorElement = document.getElementById('conveyor-belt');
+        const dayCounterElement = document.getElementById('day-counter');
+        const seedCounterElement = document.getElementById('seed-counter');
+        const actionBtn = document.getElementById('action-btn');
+        const gameOverOverlay = document.getElementById('game-over-overlay');
+        const instructionsElement = document.getElementById('instructions');
+        const goldAmountElement = document.getElementById('gold-amount');
+        const shopContainer = document.getElementById('shop-container');
+
+        function initGame() {
+            gridElement.innerHTML = '';
+            for (let r = 0; r < GRID_SIZE; r++) {
+                farmGrid[r] = [];
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    farmGrid[r][c] = null;
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    if (r === 0 || r === GRID_SIZE - 1 || c === 0 || c === GRID_SIZE - 1) {
+                        cell.classList.add('edge');
                     }
-                    gridElement.appendChild(cell); 
+                    gridElement.appendChild(cell);
                 }
             }
-            addEventListeners(); 
-            addNewSeeds(); 
-            updatePhase('PLANTING'); 
+            addEventListeners();
+            addNewSeeds();
+            updatePhase('PLANTING');
+            updateGoldDisplay();
         }
         
-        function updatePhase(newPhase) { 
-            gameState.phase = newPhase; 
-            gameState.isPathing = false; 
-            gameState.currentPath = []; 
+        function updatePhase(newPhase) {
+            gameState.phase = newPhase;
+            gameState.isPathing = false;
+            gameState.currentPath = [];
+            gameState.activeTool = null;
             
-            gridElement.className = 'farm-grid'; 
-            gridElement.classList.add(newPhase.toLowerCase() + '-phase'); 
+            document.body.classList.remove('tool-active');
+            gridElement.className = 'farm-grid';
+            gridElement.classList.add(newPhase.toLowerCase() + '-phase');
             
-            if (newPhase === 'PLANTING') { 
-                actionBtn.textContent = '完成播种'; 
-                actionBtn.disabled = false; 
-                instructionsElement.innerHTML = "<strong>阶段一：播种</strong><br>点击传送带选择种子，再点击农田空格子种下。"; 
-            } else if (newPhase === 'HARVESTING') { 
-                actionBtn.textContent = '收获路径'; 
-                actionBtn.disabled = true; 
-                instructionsElement.innerHTML = "<strong>阶段二：收获</strong><br>在农田外圈按住并拖动，画出收获路径。"; 
-            } else if (newPhase === 'DAY_END') { 
-                actionBtn.textContent = '开启新的一天'; 
-                actionBtn.disabled = false; 
-                instructionsElement.innerHTML = "一天结束了！点击按钮开始新的一天。"; 
+            if (newPhase === 'PLANTING') {
+                actionBtn.textContent = '完成播种';
+                actionBtn.disabled = false;
+                instructionsElement.innerHTML = "<strong>阶段一：播种/购买</strong><br>选择种子播种，或选择道具使用。";
+                shopContainer.style.display = 'flex';
+            } else if (newPhase === 'HARVESTING') {
+                actionBtn.textContent = '收获路径';
+                actionBtn.disabled = true;
+                instructionsElement.innerHTML = "<strong>阶段二：收获</strong><br>在农田外圈按住并拖动，画出收获路径。";
+                shopContainer.style.display = 'none';
+            } else if (newPhase === 'DAY_END') {
+                actionBtn.textContent = '开启新的一天';
+                actionBtn.disabled = false;
+                instructionsElement.innerHTML = "一天结束了！点击按钮开始新的一天。";
+                shopContainer.style.display = 'none';
             }
-            updateUI(); 
+            updateUI();
         }
 
-        function addNewSeeds() { 
-            for (let i = 0; i < SEEDS_PER_DAY; i++) { 
-                conveyorSeeds.push(CROP_TYPES[Math.floor(Math.random() * CROP_TYPES.length)]); 
+        function addNewSeeds() {
+            for (let i = 0; i < SEEDS_PER_DAY; i++) {
+                conveyorSeeds.push(CROP_TYPES[Math.floor(Math.random() * CROP_TYPES.length)]);
             }
         }
 
-        function updateUI() { 
-            gridElement.childNodes.forEach((cell, index) => { 
-                const r = Math.floor(index / GRID_SIZE); 
-                const c = index % GRID_SIZE; 
-                const crop = farmGrid[r][c]; 
-                cell.innerHTML = ''; 
-                cell.classList.remove('path'); 
-                cell.classList.toggle('empty', crop === null); 
+        function updateUI() {
+            gridElement.childNodes.forEach((cell, index) => {
+                const r = Math.floor(index / GRID_SIZE);
+                const c = index % GRID_SIZE;
+                const crop = farmGrid[r][c];
+                cell.innerHTML = '';
+                cell.classList.remove('path');
+                cell.classList.toggle('empty', crop === null);
 
-                if (gameState.currentPath.some(p => p.r === r && p.c === c)) { 
-                    cell.classList.add('path'); 
+                if (gameState.currentPath.some(p => p.r === r && p.c === c)) {
+                    cell.classList.add('path');
                 }
 
-                if (crop) { 
-                    const cropDiv = document.createElement('div'); 
-                    cropDiv.classList.add('crop-container'); 
+                if (crop) {
+                    const cropDiv = document.createElement('div');
+                    cropDiv.classList.add('crop-container');
                     
-                    if (USE_EMOJI_MODE) { 
-                        cropDiv.textContent = crop.emoji; 
-                    } else { 
-                        const cropImg = document.createElement('img'); 
-                        if (crop.daysToMature === 0) { 
-                            cropImg.src = crop.img_mature; 
-                        } else if (crop.daysToMature === 1) { 
-                            cropImg.src = crop.img_stage_1; 
-                        } else { 
-                            cropImg.src = crop.img_stage_0; 
+                    if (USE_EMOJI_MODE) {
+                        cropDiv.textContent = crop.emoji;
+                    } else {
+                        const cropImg = document.createElement('img');
+                        if (crop.daysToMature === 0) {
+                            cropImg.src = crop.img_mature;
+                        } else if (crop.daysToMature === 1) {
+                            cropImg.src = crop.img_stage_1;
+                        } else {
+                            cropImg.src = crop.img_stage_0;
                         }
-                        cropDiv.appendChild(cropImg); 
+                        cropDiv.appendChild(cropImg);
                     }
                     
-                    if (crop.daysToMature === 0) { 
-                         cropDiv.classList.add('mature'); 
+                    if (crop.daysToMature === 0) {
+                         cropDiv.classList.add('mature');
                     }
-                    cell.appendChild(cropDiv); 
+                    cell.appendChild(cropDiv);
                 }
             });
             
-            conveyorElement.innerHTML = ''; 
-            conveyorSeeds.forEach((seed, index) => { 
-                const seedPacket = document.createElement('div'); 
-                seedPacket.classList.add('seed-packet'); 
+            conveyorElement.innerHTML = '';
+            conveyorSeeds.forEach((seed, index) => {
+                const seedPacket = document.createElement('div');
+                seedPacket.classList.add('seed-packet');
                 
-                if (USE_EMOJI_MODE) { 
-                    seedPacket.textContent = seed.emoji; 
-                } else { 
-                    const seedImg = document.createElement('img'); 
-                    seedImg.src = seed.img_seed; 
-                    seedPacket.appendChild(seedImg); 
+                if (USE_EMOJI_MODE) {
+                    seedPacket.textContent = seed.emoji;
+                } else {
+                    const seedImg = document.createElement('img');
+                    seedImg.src = seed.img_seed;
+                    seedPacket.appendChild(seedImg);
                 }
 
-                seedPacket.dataset.index = index; 
-                if (index === gameState.selectedSeedIndex) { 
-                    seedPacket.classList.add('selected'); 
+                seedPacket.dataset.index = index;
+                if (index === gameState.selectedSeedIndex) {
+                    seedPacket.classList.add('selected');
                 }
-                conveyorElement.appendChild(seedPacket); 
+                conveyorElement.appendChild(seedPacket);
             });
 
-            dayCounterElement.textContent = `第 ${currentDay} 天`; 
-            seedCounterElement.textContent = `种子: ${conveyorSeeds.length}/${MAX_SEEDS}`; 
-            seedCounterElement.style.color = conveyorSeeds.length > MAX_SEEDS ? 'red' : 'inherit'; 
+            dayCounterElement.textContent = `第 ${currentDay} 天`;
+            seedCounterElement.textContent = `种子: ${conveyorSeeds.length}/${MAX_SEEDS}`;
+            seedCounterElement.style.color = conveyorSeeds.length > MAX_SEEDS ? 'red' : 'inherit';
+            
+            updateShopUI();
         }
         
-        function addEventListeners() { 
-            conveyorElement.addEventListener('click', handleConveyorClick); 
-            gridElement.addEventListener('click', handleGridClick); 
-            
-            gridElement.addEventListener('mousedown', startHarvestDraw); 
-            gridElement.addEventListener('touchstart', startHarvestDraw, { passive: false }); 
-
-            gridElement.addEventListener('mouseover', continueHarvestDraw); 
-            gridElement.addEventListener('touchmove', continueHarvestDraw, { passive: false }); 
-
-            document.addEventListener('mouseup', endHarvestDraw); 
-            document.addEventListener('touchend', endHarvestDraw); 
-
-            actionBtn.addEventListener('click', handleActionButton); 
+        function updateGoldDisplay() {
+            goldAmountElement.textContent = gameState.gold;
+            updateShopUI();
         }
+        
+        function updateShopUI() {
+            document.querySelectorAll('.shop-item').forEach(item => {
+                const toolId = item.dataset.tool;
+                const toolData = SHOP_ITEMS[toolId];
 
-        function handleGridClick(e) { 
-            if (gameState.phase !== 'PLANTING') return; 
-
-            const cell = e.target.closest('.cell'); 
-            if (!cell) return; 
-            handlePlantingClick(cell); 
-        }
-
-        function handleConveyorClick(e) { 
-            if (gameState.phase !== 'PLANTING') return; 
-            const packet = e.target.closest('.seed-packet'); 
-            if (!packet) return; 
-            const index = parseInt(packet.dataset.index); 
-            gameState.selectedSeedIndex = (gameState.selectedSeedIndex === index) ? null : index; 
-            updateUI(); 
-        }
-
-        function handlePlantingClick(cell) { 
-            if (gameState.selectedSeedIndex === null || !cell.classList.contains('empty')) return; 
-            const r = parseInt(cell.dataset.row); 
-            const c = parseInt(cell.dataset.col); 
-            const seedToPlant = conveyorSeeds[gameState.selectedSeedIndex]; 
-            farmGrid[r][c] = { ...seedToPlant, daysToMature: 2 }; 
-            conveyorSeeds.splice(gameState.selectedSeedIndex, 1); 
-            gameState.selectedSeedIndex = null; 
-            updateUI(); 
-        }
-
-        function startHarvestDraw(e) { 
-            if (gameState.phase !== 'HARVESTING') return; 
-            
-            e.preventDefault(); 
-
-            const cell = e.target.closest('.cell'); 
-            if (!cell || !cell.classList.contains('edge')) return; 
-            
-            gameState.isPathing = true; 
-            const r = parseInt(cell.dataset.row); 
-            const c = parseInt(cell.dataset.col); 
-            gameState.currentPath = [{ r, c }]; 
-            updateUI(); 
-        }
-
-        function continueHarvestDraw(e) { 
-            if (!gameState.isPathing) return; 
-            e.preventDefault(); 
-
-            let targetCell = null; 
-
-            if (e.touches && e.touches[0]) { 
-                const touch = e.touches[0]; 
-                const element = document.elementFromPoint(touch.clientX, touch.clientY); 
-                if (element) { 
-                    targetCell = element.closest('.cell'); 
+                if (gameState.gold < toolData.cost) {
+                    item.classList.add('disabled');
+                } else {
+                    item.classList.remove('disabled');
                 }
-            } else { 
-                targetCell = e.target.closest('.cell'); 
-            }
+
+                if (gameState.activeTool === toolId) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        function addEventListeners() {
+            conveyorElement.addEventListener('click', handleConveyorClick);
+            gridElement.addEventListener('click', handleGridClick);
             
-            if (!targetCell) return; 
+            gridElement.addEventListener('mousedown', startHarvestDraw);
+            gridElement.addEventListener('touchstart', startHarvestDraw, { passive: false });
+            gridElement.addEventListener('mouseover', continueHarvestDraw);
+            gridElement.addEventListener('touchmove', continueHarvestDraw, { passive: false });
+            document.addEventListener('mouseup', endHarvestDraw);
+            document.addEventListener('touchend', endHarvestDraw);
+
+            actionBtn.addEventListener('click', handleActionButton);
+            shopContainer.addEventListener('click', handleShopClick);
+        }
+
+        function handleGridClick(e) {
+            const cell = e.target.closest('.cell');
+            if (!cell) return;
+
+            if (gameState.phase === 'PLANTING' && gameState.activeTool) {
+                useActiveTool(cell);
+            } else if (gameState.phase === 'PLANTING') {
+                handlePlantingClick(cell);
+            }
+        }
+        
+        function handleShopClick(e) {
+            const item = e.target.closest('.shop-item');
+            if (!item || item.classList.contains('disabled')) return;
             
-            const r = parseInt(targetCell.dataset.row); 
-            const c = parseInt(targetCell.dataset.col); 
+            const toolId = item.dataset.tool;
 
-            const lastPos = gameState.currentPath[gameState.currentPath.length - 1]; 
-            const isAdjacent = (Math.abs(r - lastPos.r) === 1 && c === lastPos.c) || (Math.abs(c - lastPos.c) === 1 && r === lastPos.r); 
-            const isNotVisited = !gameState.currentPath.some(p => p.r === r && p.c === c); 
+            if (gameState.activeTool === toolId) {
+                gameState.activeTool = null;
+                document.body.classList.remove('tool-active');
+            } else {
+                gameState.activeTool = toolId;
+                gameState.selectedSeedIndex = null;
+                document.body.classList.add('tool-active');
+            }
+            updateUI();
+        }
 
-            if (isAdjacent && isNotVisited) { 
-                gameState.currentPath.push({ r, c }); 
-                updateUI(); 
+        function useActiveTool(cell) {
+            const toolId = gameState.activeTool;
+            const toolData = SHOP_ITEMS[toolId];
+            const r = parseInt(cell.dataset.row);
+            const c = parseInt(cell.dataset.col);
+            const crop = farmGrid[r][c];
+
+            if (gameState.gold < toolData.cost) {
+                alert('金币不足!');
+                return;
+            }
+
+            let toolUsed = false;
+            switch (toolId) {
+                case 'hoe':
+                    if (crop) {
+                        farmGrid[r][c] = null;
+                        toolUsed = true;
+                    }
+                    break;
+                case 'speed-gro':
+                    if (crop && crop.daysToMature > 0) {
+                        crop.daysToMature--;
+                        toolUsed = true;
+                    }
+                    break;
+            }
+
+            if (toolUsed) {
+                gameState.gold -= toolData.cost;
+                gameState.activeTool = null;
+                document.body.classList.remove('tool-active');
+                updateGoldDisplay();
+                updateUI();
             }
         }
 
-        function endHarvestDraw(e) { 
-            if (!gameState.isPathing) return; 
-            gameState.isPathing = false; 
+        function handleConveyorClick(e) {
+            if (gameState.phase !== 'PLANTING') return;
+            const packet = e.target.closest('.seed-packet');
+            if (!packet) return;
+            const index = parseInt(packet.dataset.index);
+            gameState.activeTool = null;
+            document.body.classList.remove('tool-active');
+            gameState.selectedSeedIndex = (gameState.selectedSeedIndex === index) ? null : index;
+            updateUI();
+        }
 
-            if (gameState.currentPath.length > 0) { 
-                finalizeHarvestPath(); 
+        function handlePlantingClick(cell) {
+            if (gameState.selectedSeedIndex === null || !cell.classList.contains('empty')) return;
+            const r = parseInt(cell.dataset.row);
+            const c = parseInt(cell.dataset.col);
+            const seedToPlant = conveyorSeeds[gameState.selectedSeedIndex];
+            farmGrid[r][c] = { ...seedToPlant, daysToMature: 2 };
+            conveyorSeeds.splice(gameState.selectedSeedIndex, 1);
+            gameState.selectedSeedIndex = null;
+            updateUI();
+        }
+
+        function startHarvestDraw(e) {
+            if (gameState.phase !== 'HARVESTING') return;
+            e.preventDefault();
+            const cell = e.target.closest('.cell');
+            if (!cell || !cell.classList.contains('edge')) return;
+            gameState.isPathing = true;
+            const r = parseInt(cell.dataset.row);
+            const c = parseInt(cell.dataset.col);
+            gameState.currentPath = [{ r, c }];
+            updateUI();
+        }
+
+        function continueHarvestDraw(e) {
+            if (!gameState.isPathing) return;
+            e.preventDefault();
+            let targetCell = null;
+            if (e.touches && e.touches[0]) {
+                const touch = e.touches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (element) {
+                    targetCell = element.closest('.cell');
+                }
+            } else {
+                targetCell = e.target.closest('.cell');
+            }
+            if (!targetCell) return;
+            const r = parseInt(targetCell.dataset.row);
+            const c = parseInt(targetCell.dataset.col);
+            const lastPos = gameState.currentPath[gameState.currentPath.length - 1];
+            const isAdjacent = (Math.abs(r - lastPos.r) === 1 && c === lastPos.c) || (Math.abs(c - lastPos.c) === 1 && r === lastPos.r);
+            const isNotVisited = !gameState.currentPath.some(p => p.r === r && p.c === c);
+            if (isAdjacent && isNotVisited) {
+                gameState.currentPath.push({ r, c });
+                updateUI();
             }
         }
 
-        function handleActionButton() { 
-            if (gameState.phase === 'PLANTING') { 
-                updatePhase('HARVESTING'); 
-            } else if (gameState.phase === 'DAY_END') { 
-                startNewDay(); 
+        function endHarvestDraw(e) {
+            if (!gameState.isPathing) return;
+            gameState.isPathing = false;
+            if (gameState.currentPath.length > 0) {
+                finalizeHarvestPath();
             }
         }
 
-        function finalizeHarvestPath() { 
-            harvestCropsByPath(gameState.currentPath); 
-            setTimeout(() => { 
-                updatePhase('DAY_END'); 
+        function handleActionButton() {
+            if (gameState.phase === 'PLANTING') {
+                updatePhase('HARVESTING');
+            } else if (gameState.phase === 'DAY_END') {
+                startNewDay();
+            }
+        }
+
+        function finalizeHarvestPath() {
+            harvestCropsByPath(gameState.currentPath);
+            setTimeout(() => {
+                updatePhase('DAY_END');
             }, 300);
         }
 
-        function harvestCropsByPath(path) { 
-            const toHarvest = new Set(); 
-            if (path.length < 3) return; 
-            let chain = []; 
-            function checkChain() { 
-                if (chain.length >= 3) { 
-                    chain.forEach(pos => toHarvest.add(`${pos.r}-${pos.c}`)); 
+        function harvestCropsByPath(path) {
+            const toHarvest = new Set();
+            if (path.length < 3) return;
+            let chain = [];
+            function checkChain() {
+                if (chain.length >= 3) {
+                    chain.forEach(pos => toHarvest.add(`${pos.r}-${pos.c}`));
                 }
             }
-            for (const pos of path) { 
-                const crop = farmGrid[pos.r][pos.c]; 
-                const chainCrop = chain.length > 0 ? farmGrid[chain[0].r][chain[0].c] : null; 
-                if (crop && crop.daysToMature === 0 && (chain.length === 0 || crop.id === chainCrop.id)) { 
-                    chain.push(pos); 
-                } else { 
-                    checkChain(); 
-                    chain = (crop && crop.daysToMature === 0) ? [pos] : []; 
+            for (const pos of path) {
+                const crop = farmGrid[pos.r][pos.c];
+                const chainCrop = chain.length > 0 ? farmGrid[chain[0].r][chain[0].c] : null;
+                if (crop && crop.daysToMature === 0 && (chain.length === 0 || crop.id === chainCrop.id)) {
+                    chain.push(pos);
+                } else {
+                    checkChain();
+                    chain = (crop && crop.daysToMature === 0) ? [pos] : [];
                 }
             }
-            checkChain(); 
-            toHarvest.forEach(posString => { 
-                const [r, c] = posString.split('-').map(Number); 
-                farmGrid[r][c] = null; 
+            checkChain();
+            
+            toHarvest.forEach(posString => {
+                const [r, c] = posString.split('-').map(Number);
+                const harvestedCrop = farmGrid[r][c];
+                if (harvestedCrop) {
+                    gameState.gold += harvestedCrop.goldValue;
+                }
+                farmGrid[r][c] = null;
             });
+            updateGoldDisplay();
         }
 
-        function startNewDay() { 
-            currentDay++; 
-            for (let r = 0; r < GRID_SIZE; r++) { 
-                for (let c = 0; c < GRID_SIZE; c++) { 
-                    if (farmGrid[r][c] && farmGrid[r][c].daysToMature > 0) { 
-                        farmGrid[r][c].daysToMature--; 
+        function startNewDay() {
+            currentDay++;
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (farmGrid[r][c] && farmGrid[r][c].daysToMature > 0) {
+                        farmGrid[r][c].daysToMature--;
                     }
                 }
             }
-            addNewSeeds(); 
-            if (conveyorSeeds.length > MAX_SEEDS) { 
-                gameOver(); 
-                return; 
+            addNewSeeds();
+            if (conveyorSeeds.length > MAX_SEEDS) {
+                gameOver();
+                return;
             }
-            updatePhase('PLANTING'); 
+            updatePhase('PLANTING');
         }
         
-        function gameOver() { 
-            gameOverOverlay.style.display = 'flex'; 
+        function gameOver() {
+            gameOverOverlay.style.display = 'flex';
         }
 
-        initGame(); 
-    </script> </body> </html>
+        initGame();
+    </script>
+</body>
+</html>
