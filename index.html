@@ -173,19 +173,13 @@
             opacity: 0.5; cursor: not-allowed;
             background-color: #ccc;
         }
-        .shop-item img {
-            width: 24px; height: 24px;
-            image-rendering: pixelated;
-        }
+        .shop-item img { width: 24px; height: 24px; image-rendering: pixelated; }
         .item-cost {
             margin-top: 5px; font-weight: bold;
             font-size: 0.9em; display: flex;
             align-items: center;
         }
-        .item-cost img {
-            width: 10px; height: 10px;
-            margin-left: 3px;
-        }
+        .item-cost img { width: 10px; height: 10px; margin-left: 3px; }
     </style>
 </head>
 <body>
@@ -229,8 +223,6 @@
         const GRID_SIZE = 6; // 网格大小
         const MAX_SEEDS = 16; // 最大种子数
         const SEEDS_PER_DAY = 10; // 每日新增种子数
-        const SPRINKLER_CHANCE = 0.2; // 洒水器每日出现概率
-        const SPRINKLER_DAY = 5; // 从第几天后开始可能出现洒水器
 
         // --- 数据定义 ---
         const CROP_TYPES = [ 
@@ -254,6 +246,12 @@
             currentPath: [],
             gold: 0,
             activeTool: null,
+            // 新增：洒水器相关的状态
+            sprinklerCount: 0, // 当前洒水器数量
+            needsToPlaceFirstSprinkler: false, // 是否处于“等待放置第一个洒水器”的状态
+            needsToPlaceSecondSprinkler: false, // 是否处于“等待放置第二个洒水器”的状态
+            dayFirstSprinklerAppeared: 0, // 记录第一个洒水器出现的天数，用于计算移动间隔
+            daySecondSprinklerAppeared: 0, // 记录第二个洒水器出现的天数
         };
 
         // --- DOM元素获取 ---
@@ -274,7 +272,6 @@
             for (let r = 0; r < GRID_SIZE; r++) {
                 farmGrid[r] = [];
                 for (let c = 0; c < GRID_SIZE; c++) {
-                    // 修改点：地块数据结构增加 hasSprinkler 属性
                     farmGrid[r][c] = { crop: null, isWatered: false, hasSprinkler: false };
                     const cell = document.createElement('div');
                     cell.classList.add('cell');
@@ -343,13 +340,12 @@
                     cell.classList.add('path');
                 }
 
-                // 修改点：新增洒水器渲染逻辑
                 if (tile.hasSprinkler) {
                     const sprinklerImg = document.createElement('img');
                     sprinklerImg.src = 'pic/Quality_Sprinkler.png';
-                    sprinklerImg.classList.add('sprinkler-img'); // 可选，方便未来添加特定样式
+                    sprinklerImg.classList.add('sprinkler-img');
                     cell.appendChild(sprinklerImg);
-                } else if (crop) { // 只有在没有洒水器的情况下才渲染作物
+                } else if (crop) {
                     const cropDiv = document.createElement('div');
                     cropDiv.classList.add('crop-container');
                     
@@ -410,13 +406,11 @@
             document.querySelectorAll('.shop-item').forEach(item => {
                 const toolId = item.dataset.tool;
                 const toolData = SHOP_ITEMS[toolId];
-
                 if (gameState.gold < toolData.cost) {
                     item.classList.add('disabled');
                 } else {
                     item.classList.remove('disabled');
                 }
-
                 if (gameState.activeTool === toolId) {
                     item.classList.add('selected');
                 } else {
@@ -443,7 +437,6 @@
         function handleGridClick(e) {
             const cell = e.target.closest('.cell');
             if (!cell) return;
-
             if (gameState.phase === 'PLANTING' && gameState.activeTool) {
                 useActiveTool(cell);
             } else if (gameState.phase === 'PLANTING') {
@@ -454,9 +447,7 @@
         function handleShopClick(e) {
             const item = e.target.closest('.shop-item');
             if (!item || item.classList.contains('disabled')) return;
-            
             const toolId = item.dataset.tool;
-
             if (gameState.activeTool === toolId) {
                 gameState.activeTool = null;
                 document.body.classList.remove('tool-active');
@@ -519,9 +510,7 @@
         function handlePlantingClick(cell) {
             const r = parseInt(cell.dataset.row);
             const c = parseInt(cell.dataset.col);
-            // 修改点：增加对洒水器的判断
             if (gameState.selectedSeedIndex === null || farmGrid[r][c].crop !== null || farmGrid[r][c].hasSprinkler) return;
-            
             const seedToPlant = conveyorSeeds[gameState.selectedSeedIndex];
             farmGrid[r][c].crop = { ...seedToPlant, daysToMature: 2 };
             conveyorSeeds.splice(gameState.selectedSeedIndex, 1);
@@ -555,13 +544,9 @@
                 targetCell = e.target.closest('.cell');
             }
             if (!targetCell) return;
-            
             const r = parseInt(targetCell.dataset.row);
             const c = parseInt(targetCell.dataset.col);
-
-            // 修改点：路径不能经过有洒水器的地块
             if (farmGrid[r][c].hasSprinkler) return;
-
             const lastPos = gameState.currentPath[gameState.currentPath.length - 1];
             const isAdjacent = (Math.abs(r - lastPos.r) === 1 && c === lastPos.c) || (Math.abs(c - lastPos.c) === 1 && r === lastPos.r);
             const isNotVisited = !gameState.currentPath.some(p => p.r === r && p.c === c);
@@ -591,7 +576,6 @@
             gameState.currentPath.forEach(pos => {
                 farmGrid[pos.r][pos.c].isWatered = true;
             });
-            
             harvestCropsByPath(gameState.currentPath);
             setTimeout(() => {
                 updatePhase('DAY_END');
@@ -618,7 +602,6 @@
                 }
             }
             checkChain();
-            
             toHarvest.forEach(posString => {
                 const [r, c] = posString.split('-').map(Number);
                 const harvestedCrop = farmGrid[r][c].crop;
@@ -630,22 +613,91 @@
             updateGoldDisplay();
         }
 
-        // 新增：洒水器自动浇水逻辑
-        function applySprinklerWatering() {
-            const sprinklerLocations = [];
-            // 首先找到所有洒水器的位置
+        // --- 新增：洒水器相关的所有辅助函数 ---
+
+        // 获取所有洒水器的位置
+        function getAllSprinklerLocations() {
+            const locations = [];
             for (let r = 0; r < GRID_SIZE; r++) {
                 for (let c = 0; c < GRID_SIZE; c++) {
                     if (farmGrid[r][c].hasSprinkler) {
-                        sprinklerLocations.push({ r, c });
+                        locations.push({ r, c });
                     }
                 }
             }
-            // 然后为每个洒水器周围的格子浇水
+            return locations;
+        }
+
+        // 获取所有可以放置洒水器的有效空位
+        function getValidSprinklerSpots() {
+            const validSpots = [];
+            const existingSprinklers = getAllSprinklerLocations();
+            // 遍历所有非边缘地块
+            for (let r = 1; r < GRID_SIZE - 1; r++) {
+                for (let c = 1; c < GRID_SIZE - 1; c++) {
+                    const tile = farmGrid[r][c];
+                    // 检查地块是否为空（无作物且无洒水器）
+                    if (tile.crop === null && !tile.hasSprinkler) {
+                        // 检查该位置是否与已存在的洒水器相邻
+                        const isAdjacentToOtherSprinkler = existingSprinklers.some(sprinklerPos => 
+                            Math.max(Math.abs(r - sprinklerPos.r), Math.abs(c - sprinklerPos.c)) <= 1
+                        );
+                        if (!isAdjacentToOtherSprinkler) {
+                            validSpots.push({ r, c });
+                        }
+                    }
+                }
+            }
+            return validSpots;
+        }
+
+        // 尝试放置一个新洒水器
+        function tryPlaceNewSprinkler() {
+            const validSpots = getValidSprinklerSpots();
+            if (validSpots.length > 0) {
+                const spot = validSpots[Math.floor(Math.random() * validSpots.length)];
+                farmGrid[spot.r][spot.c].hasSprinkler = true;
+                return true; // 表示成功放置
+            }
+            return false; // 表示没有空位，放置失败
+        }
+        
+        // 尝试移动现有洒水器
+        function tryMoveSprinklers() {
+            const oldLocations = getAllSprinklerLocations();
+            // 临时移除所有洒水器
+            oldLocations.forEach(pos => {
+                farmGrid[pos.r][pos.c].hasSprinkler = false;
+            });
+
+            const newLocations = [];
+            let possible = true;
+
+            for (let i = 0; i < oldLocations.length; i++) {
+                const validSpots = getValidSprinklerSpots(); // 每次查找都排除已选新位置
+                if (validSpots.length === 0) {
+                    possible = false; // 没有可移动的位置了
+                    break;
+                }
+                const newSpot = validSpots[Math.floor(Math.random() * validSpots.length)];
+                farmGrid[newSpot.r][newSpot.c].hasSprinkler = true; // 预先占据新位置
+                newLocations.push(newSpot);
+            }
+            
+            // 如果移动失败（比如只有两个空位，无法不相邻地移动两个洒水器），则恢复原位
+            if (!possible) {
+                newLocations.forEach(pos => { farmGrid[pos.r][pos.c].hasSprinkler = false; }); // 清空失败的尝试
+                oldLocations.forEach(pos => { farmGrid[pos.r][pos.c].hasSprinkler = true; }); // 恢复原位
+            }
+        }
+
+        // 洒水器自动浇水逻辑
+        function applySprinklerWatering() {
+            const sprinklerLocations = getAllSprinklerLocations();
             sprinklerLocations.forEach(pos => {
                 for (let dr = -1; dr <= 1; dr++) {
                     for (let dc = -1; dc <= 1; dc++) {
-                        if (dr === 0 && dc === 0) continue; // 跳过洒水器自身
+                        // 注意：这里我们让洒水器也为自己所在的格子“浇水”，虽然它不能种东西，但逻辑上更统一
                         const nr = pos.r + dr;
                         const nc = pos.c + dc;
                         if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE) {
@@ -655,6 +707,51 @@
                 }
             });
         }
+        
+        // 管理所有洒水器生成和移动的复杂逻辑
+        function handleSprinklerLogic() {
+            // 检查是否需要设置“待放置”状态
+            if (currentDay > 10 && gameState.sprinklerCount === 0 && !gameState.dayFirstSprinklerAppeared) {
+                gameState.needsToPlaceFirstSprinkler = true;
+            }
+            if (currentDay > 25 && gameState.sprinklerCount === 1 && !gameState.daySecondSprinklerAppeared) {
+                gameState.needsToPlaceSecondSprinkler = true;
+            }
+
+            // 如果需要放置第一个洒水器
+            if (gameState.needsToPlaceFirstSprinkler) {
+                if (tryPlaceNewSprinkler()) {
+                    gameState.sprinklerCount = 1;
+                    gameState.needsToPlaceFirstSprinkler = false;
+                    gameState.dayFirstSprinklerAppeared = currentDay;
+                }
+                return; // 放置后，当天不进行移动操作
+            }
+
+            // 如果需要放置第二个洒水器
+            if (gameState.needsToPlaceSecondSprinkler) {
+                if (tryPlaceNewSprinkler()) {
+                    gameState.sprinklerCount = 2;
+                    gameState.needsToPlaceSecondSprinkler = false;
+                    gameState.daySecondSprinklerAppeared = currentDay;
+                }
+                return; // 放置后，当天不进行移动操作
+            }
+
+            // 如果不需要放置，则检查是否需要移动
+            const dayOfFirst = gameState.dayFirstSprinklerAppeared;
+            const dayOfSecond = gameState.daySecondSprinklerAppeared;
+
+            // 两个洒水器的情况
+            if (gameState.sprinklerCount === 2 && dayOfSecond > 0 && (currentDay - dayOfSecond) > 0 && (currentDay - dayOfSecond) % 5 === 0) {
+                tryMoveSprinklers();
+            } 
+            // 只有一个洒水器的情况
+            else if (gameState.sprinklerCount === 1 && dayOfFirst > 0 && (currentDay - dayOfFirst) > 0 && (currentDay - dayOfFirst) % 5 === 0) {
+                tryMoveSprinklers();
+            }
+        }
+
 
         function startNewDay() {
             currentDay++;
@@ -664,28 +761,12 @@
                     if (tile.crop && tile.crop.daysToMature > 0 && tile.isWatered) {
                         tile.crop.daysToMature--;
                     }
-                    tile.isWatered = false; // 每天开始时，所有土地先变干燥
+                    tile.isWatered = false;
                 }
             }
 
-            // --- 新增：洒水器出现和自动浇水逻辑 ---
-            // 1. 检查是否可能出现新洒水器
-            if (currentDay > SPRINKLER_DAY && Math.random() < SPRINKLER_CHANCE) {
-                const validSpots = [];
-                // 只在中间的4x4区域寻找空地
-                for (let r = 1; r < GRID_SIZE - 1; r++) {
-                    for (let c = 1; c < GRID_SIZE - 1; c++) {
-                        if (farmGrid[r][c].crop === null && !farmGrid[r][c].hasSprinkler) {
-                            validSpots.push({ r, c });
-                        }
-                    }
-                }
-                if (validSpots.length > 0) {
-                    const spot = validSpots[Math.floor(Math.random() * validSpots.length)];
-                    farmGrid[spot.r][spot.c].hasSprinkler = true;
-                }
-            }
-            // 2. 应用所有洒水器的浇水效果
+            // --- 修改点：在这里执行所有洒水器相关的逻辑 ---
+            handleSprinklerLogic();
             applySprinklerWatering();
             // ------------------------------------
 
@@ -697,6 +778,7 @@
             updatePhase('PLANTING');
         }
         
+
         function gameOver() {
             gameOverOverlay.style.display = 'flex';
         }
