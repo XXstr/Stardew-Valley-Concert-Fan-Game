@@ -1,207 +1,292 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星露谷物语：播种与规划</title>
-    <style>
+<!DOCTYPE html> <html lang="zh-CN"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <title>星露谷物语：播种与规划 (完整最终版)</title> <style>
         :root {
-            --stardew-brown: #8b5a2b; --stardew-soil: #b88b5a;
-            --stardew-soil-watered: #96693c; --stardew-light-soil: #d4a777;
-            --stardew-light-soil-watered: #ab8457; --stardew-bg: #f0e8d1;
-            --stardew-container-bg: #f7f2e4; --stardew-text: #513a2c;
-            --stardew-green: #78a233; --stardew-highlight: #fdeca6;
+            --stardew-brown: #8b5a2b; 
+            --stardew-soil: #b88b5a;  
+            --stardew-soil-watered: #96693c; 
+            --stardew-light-soil: #d4a777; 
+            --stardew-light-soil-watered: #ab8457; 
+            --stardew-bg: #f0e8d1; 
+            --stardew-container-bg: #f7f2e4; 
+            --stardew-text: #513a2c; 
+            --stardew-green: #78a233; 
+            --stardew-highlight: #fdeca6; 
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--stardew-bg); color: var(--stardew-text);
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0; user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+            background-color: var(--stardew-bg); 
+            color: var(--stardew-text); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent; 
         }
 
         #game-container {
-            position: relative; text-align: center;
-            background-color: var(--stardew-container-bg);
-            padding: 15px; border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border: 5px solid var(--stardew-brown);
-            margin: 15px; width: fit-content;
+            position: relative; 
+            text-align: center; 
+            background-color: var(--stardew-container-bg); 
+            padding: 15px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+            border: 5px solid var(--stardew-brown); 
+            margin: 15px; 
+            width: fit-content; 
+            z-index: 10; 
         }
 
         h1 { color: #6a4f4b; margin-top: 0; font-size: 1.8em; }
-        
+
         #instructions {
-            margin: -10px 0 15px 0; padding: 8px;
-            background-color: var(--stardew-bg);
-            border-radius: 5px; border: 1px dashed var(--stardew-brown);
-            min-height: 40px;
+            margin: -10px 0 15px 0; 
+            padding: 8px; 
+            background-color: var(--stardew-bg); 
+            border-radius: 5px; 
+            border: 1px dashed var(--stardew-brown); 
+            min-height: 40px; 
         }
         
         #instructions strong { color: var(--stardew-green); }
 
         #status-bar {
-            display: flex; justify-content: space-around;
-            align-items: center; margin: 15px 0;
-            font-size: 1.0em; font-weight: bold;
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            margin: 15px 0; 
+            font-size: 1.0em; 
+            font-weight: bold; 
         }
         
         #gold-display { display: flex; align-items: center; }
-        #gold-display img { width: 20px; height: 20px; margin-right: 8px; }
+        #gold-display img { width: 20px; height: 20px; margin-right: 8px; } 
         
         #conveyor-belt-container {
-            background-color: #c4a782; padding: 10px;
-            border-radius: 10px; margin: 0 auto 20px auto;
-            border: 2px solid var(--stardew-brown);
-            display: grid; grid-template-rows: repeat(2, 35px);
-            grid-template-columns: repeat(8, 35px);
-            gap: 5px; align-items: center;
-            justify-content: center; width: fit-content;
+            background-color: #c4a782; 
+            padding: 10px; 
+            border-radius: 10px; 
+            margin: 0 auto 20px auto; 
+            border: 2px solid var(--stardew-brown); 
+            display: grid; 
+            grid-template-rows: repeat(2, 35px); 
+            grid-template-columns: repeat(8, 35px); 
+            gap: 5px; 
+            align-items: center; 
+            justify-content: center; 
+            width: fit-content; 
         }
         
-        #conveyor-belt { display: contents; }
+        #conveyor-belt { display: contents; } 
 
         .seed-packet {
-            width: 30px; height: 30px;
-            display: flex; justify-content: center; align-items: center;
-            border-radius: 5px; background-color: #eaddc7;
-            border: 2px solid var(--stardew-brown);
-            cursor: pointer; transition: all 0.2s;
-            flex-shrink: 0; font-size: 24px;
+            width: 30px; height: 30px; 
+            display: flex; justify-content: center; align-items: center; 
+            border-radius: 5px; 
+            background-color: #eaddc7; 
+            border: 2px solid var(--stardew-brown); 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            flex-shrink: 0; 
+            font-size: 24px; 
         }
         .seed-packet.selected {
-            background-color: var(--stardew-highlight);
-            transform: scale(1.15); box-shadow: 0 0 10px #ffbf00;
+            background-color: var(--stardew-highlight); 
+            transform: scale(1.15); 
+            box-shadow: 0 0 10px #ffbf00; 
         }
 
         #farm-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 50px);
-            grid-template-rows: repeat(6, 50px);
-            gap: 4px; background-color: var(--stardew-brown);
-            border: 4px solid var(--stardew-brown);
-            padding: 0; border-radius: 10px;
-            cursor: default; margin-left: auto;
-            margin-right: auto; touch-action: none;
-            width: calc(6 * 50px + 5 * 4px);
-            box-sizing: content-box;
+            display: grid; 
+            grid-template-columns: repeat(6, 50px); 
+            grid-template-rows: repeat(6, 50px); 
+            gap: 4px; 
+            background-color: var(--stardew-brown); 
+            border: 4px solid var(--stardew-brown); 
+            padding: 0; 
+            border-radius: 10px; 
+            cursor: default; 
+            margin-left: auto; margin-right: auto; 
+            touch-action: none; 
+            width: calc(6 * 50px + 5 * 4px); 
+            box-sizing: content-box; 
         }
         
-        .tool-active #farm-grid .cell { cursor: cell !important; }
+        .tool-active #farm-grid .cell { cursor: cell !important; } 
         .harvesting-phase .cell.edge { cursor: pointer; }
 
         .cell {
-            width: 50px; height: 50px;
-            background-color: var(--stardew-soil);
-            border-radius: 5px; display: flex;
-            justify-content: center; align-items: center;
-            font-size: 30px; position: relative;
-            transition: background-color 0.3s ease;
+            width: 50px; height: 50px; 
+            background-color: var(--stardew-soil); 
+            border-radius: 5px; 
+            display: flex; justify-content: center; align-items: center; 
+            font-size: 30px; 
+            position: relative; 
+            transition: background-color 0.3s ease; 
         }
 
-        .cell.watered { background-color: var(--stardew-soil-watered); }
-        .cell.empty.planting-phase:hover { cursor: pointer; background-color: var(--stardew-light-soil); }
-        .cell.path { background-color: var(--stardew-highlight) !important; opacity: 0.8; }
+        .cell.watered { background-color: var(--stardew-soil-watered); } 
+        .cell.empty.planting-phase:hover { cursor: pointer; background-color: var(--stardew-light-soil); } 
+        .cell.path { background-color: var(--stardew-highlight) !important; opacity: 0.8; } 
         
-        /* 您的自定义修改：保持此部分注释状态 */
-        /*
-        .cell.edge { background-color: var(--stardew-light-soil); }
-        .cell.edge.watered { background-color: var(--stardew-light-soil-watered); }
-        */
-
         .crop-container {
-            width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            /* animation: plant-pop 0.3s ease-out; */
-            pointer-events: none;
+            width: 100%; height: 100%; 
+            display: flex; justify-content: center; align-items: center; 
+            pointer-events: none; 
         }
         .crop-container.mature {
-            transform: scale(1.1);
-            /* border: 2px solid var(--stardew-highlight); */
-            box-sizing: border-box;
+            transform: scale(1.1); 
+            box-sizing: border-box; 
         }
-        
-        /*
-        @keyframes plant-pop {
-            from { transform: scale(0.5); }
-            to { transform: scale(1); }
-        }
-        */
         
         #game-over-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white; display: none;
-            flex-direction: column; justify-content: center; align-items: center;
-            font-size: 3em; z-index: 100;
+            position: fixed; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(0, 0, 0, 0.7); 
+            color: white; 
+            display: none; 
+            flex-direction: column; 
+            justify-content: center; align-items: center; 
+            font-size: 3em; 
+            z-index: 100; 
         }
         
         #action-btn {
-            padding: 10px 20px; font-size: 1.2em;
-            background-color: var(--stardew-green);
-            color: white; border: none; border-radius: 8px;
-            cursor: pointer; margin-top: 15px;
-            transition: background-color 0.2s; width: 200px;
+            padding: 10px 20px; 
+            font-size: 1.2em; 
+            background-color: var(--stardew-green); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-top: 15px; 
+            transition: background-color 0.2s; 
+            width: 200px; 
         }
-        #action-btn:disabled { background-color: #a0a0a0; cursor: not-allowed; }
-        #action-btn:hover:not(:disabled) { background-color: #8bc34a; }
+        #action-btn:disabled { background-color: #a0a0a0; cursor: not-allowed; } 
+        #action-btn:hover:not(:disabled) { background-color: #8bc34a; } 
         
         .seed-packet img, .crop-container img, .sprinkler-img {
-            max-width: 100%; max-height: 100%;
-            object-fit: contain; image-rendering: pixelated;
-            image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;
+            max-width: 100%; max-height: 100%; 
+            object-fit: contain; 
+            image-rendering: pixelated; 
+            image-rendering: -moz-crisp-edges; 
+            image-rendering: crisp-edges; 
         }
 
         #shop-container {
-            margin-top: 20px; display: flex;
-            justify-content: center; gap: 15px;
+            margin-top: 20px; 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
         }
         .shop-item {
-            display: flex; flex-direction: column;
-            align-items: center; background-color: #e0ecd0;
-            padding: 8px; border-radius: 8px;
-            border: 2px solid var(--stardew-brown);
-            cursor: pointer; transition: all 0.2s ease;
+            display: flex; flex-direction: column; 
+            align-items: center; 
+            background-color: #e0ecd0; 
+            padding: 8px; 
+            border-radius: 8px; 
+            border: 2px solid var(--stardew-brown); 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
         }
-        .shop-item:hover { background-color: var(--stardew-highlight); }
-        .shop-item.selected {
+        .shop-item:hover { background-color: var(--stardew-highlight); } 
+        .shop-item.selected { 
             background-color: var(--stardew-highlight);
-            box-shadow: 0 0 10px #ffbf00;
+            box-shadow: 0 0 10px #ffbf00; 
         }
-        .shop-item.disabled {
-            opacity: 0.5; cursor: not-allowed;
+        .shop-item.disabled { 
+            opacity: 0.5; 
+            cursor: not-allowed; 
             background-color: #ccc;
         }
-        .shop-item img { width: 24px; height: 24px; image-rendering: pixelated; }
-        .item-cost {
-            margin-top: 5px; font-weight: bold;
-            font-size: 0.9em; display: flex;
+        .shop-item img { width: 24px; height: 24px; image-rendering: pixelated; } 
+        .item-cost { 
+            margin-top: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: flex;
             align-items: center;
         }
-        .item-cost img { width: 10px; height: 10px; margin-left: 3px; }
+        .item-cost img { width: 10px; height: 10px; margin-left: 3px; } 
+        
+        #tutorial-overlay {
+            position: fixed; top: 0; left: 0; 
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); 
+            z-index: 200; 
+            display: none; 
+            justify-content: center; 
+            align-items: flex-end; 
+        }
+        #tutorial-dialogue-box {
+            position: relative; 
+            width: 85%; 
+            max-width: 360px;
+            margin-bottom: 5%; 
+            padding: 25px 15px 15px 60px; 
+            background-image: url('pic/bar.png'); 
+            background-size: 100% 100%; 
+            color: var(--stardew-text); 
+            text-align: left; 
+            font-size: 1em;
+            font-weight: 600; 
+            box-sizing: border-box;
+            display: flex;
+            align-items: flex-end; 
+        }
+        #tutorial-character {
+            position: absolute; 
+            left: 0px; bottom: 0; 
+            top: 25px;   
+            width: 75px; height: auto; 
+        }
+        #tutorial-text-container {
+            flex-grow: 1; 
+            position: relative;
+        }
+        #tutorial-text {
+            margin: 0; padding: 0;
+            padding-bottom: 20px; 
+            font-size: 0.9em; 
+        }
+        .tutorial-buttons {
+            position: absolute; 
+            right: 0; bottom: 0px; 
+        }
+        #tutorial-skip-btn {
+             background-color:#E27A3E;
+             border: 1px solid var(--stardew-brown);
+             border-radius: 5px;
+             padding: 2px 6px;
+             margin-right: 10px;
+             cursor: pointer;
+             font-size: 0.8em;
+        }
+        #tutorial-next-btn {
+            background-color: transparent; 
+            border: none; 
+            font-size: 1.2em; 
+            cursor: pointer;
+        }
+        .tutorial-highlight {
+            position: relative;
+            z-index: 201; 
+            box-shadow: 0 0 15px 5px white; 
+            border-radius: 10px;
+            transition: box-shadow 0.3s ease; 
+        }
     </style>
 </head>
-<body>
-    <div id="game-container">
-        <h1>星露谷：播种与规划</h1>
-        <div id="instructions"></div>
-        <div id="status-bar">
-            <div id="day-counter">第 1 天</div>
-            <div id="gold-display">
-                <img src="pic/Gold.png" alt="金币">
-                <span id="gold-amount">0</span>
-            </div>
-            <div id="seed-counter">种子: 10/16</div>
-        </div>
-        
+<body> <div id="game-container">
+        <h1>星露谷：播种与规划</h1> <div id="instructions"></div> <div id="status-bar">
+            <div id="day-counter">第 1 天</div> <div id="gold-display"> <img src="pic/Gold.png" alt="金币"> <span id="gold-amount">0</span> </div>
+            <div id="seed-counter">种子: 10/16</div> </div>
         <div id="conveyor-belt-container">
-            <div id="conveyor-belt"></div>
-        </div>
-        <div id="farm-grid"></div>
-        <div id="shop-container">
-            <div class="shop-item" data-tool="hoe">
-                <img src="pic/Hoe.png" alt="锄头">
+            <div id="conveyor-belt"></div> </div>
+        <div id="farm-grid"></div> <div id="shop-container">
+            <div class="shop-item" data-tool="hoe"> <img src="pic/Hoe.png" alt="锄头">
                 <div class="item-cost">1000<img src="pic/Gold.png"></div>
             </div>
             <div class="shop-item" data-tool="speed-gro">
@@ -212,19 +297,29 @@
         <button id="action-btn">完成播种</button>
     </div>
     
+    <div id="tutorial-overlay">
+        <div id="tutorial-dialogue-box">
+            <img id="tutorial-character" src="pic/120px-Lewis_Winter_00.png" alt="刘易斯镇长">
+            <div id="tutorial-text-container">
+                <p id="tutorial-text"></p> <div class="tutorial-buttons">
+                    <button id="tutorial-skip-btn">skip</button>
+                    <button id="tutorial-next-btn">▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div id="game-over-overlay">
         <div>游戏失败</div>
         <button onclick="location.reload()" style="margin-top: 20px; font-size: 0.5em; padding: 10px 20px;">重新开始</button>
-    </div>
+        </div>
 
     <script>
-        // --- 游戏设置与常量 ---
-        const USE_EMOJI_MODE = false; // 全局开关：设置为 true 使用Emoji，设置为 false 使用图片
-        const GRID_SIZE = 6; // 网格大小
-        const MAX_SEEDS = 16; // 最大种子数
-        const SEEDS_PER_DAY = 10; // 每日新增种子数
-
-        // --- 数据定义 ---
+        const USE_EMOJI_MODE = false; 
+        const GRID_SIZE = 6; 
+        const MAX_SEEDS = 16; 
+        const SEEDS_PER_DAY = 10; 
+        
         const CROP_TYPES = [ 
             { id: 'parsnip', emoji: '🤍', goldValue: 35, img_seed: 'pic/Parsnip_Seeds.png', img_stage_0: 'pic/Parsnip_Stage_1.png', img_stage_1: 'pic/Parsnip_Stage_4.png', img_mature: 'pic/Parsnip.png' },
             { id: 'potato', emoji: '🥔', goldValue: 80, img_seed: 'pic/Potato_Seeds.png', img_stage_0: 'pic/Potato_Stage_1.png', img_stage_1: 'pic/Potato_Stage_4.png', img_mature: 'pic/Potato.png' },
@@ -236,123 +331,204 @@
             hoe: { name: '锄头', cost: 1000 },
             'speed-gro': { name: '高级生长激素', cost: 150 }
         };
+        const TUTORIAL_DAY_ONE_PLANTING = [
+            { text: "你好，农夫！欢迎来到你的新农场。我来为你介绍一下基本操作吧。", highlight: '#game-container', trigger: 'button' },
+            { text: "页面上方是你的种子背包，皮埃尔每天都会为你送来新的种子。", highlight: '#conveyor-belt-container', trigger: 'button' },
+            { text: "鹈鹕镇最优秀的农场主是不会浪费种子的！因此当种子背包满时游戏结束。", highlight: '#conveyor-belt-container', trigger: 'button' },
+            { text: "每天的播种阶段可以在农田下方的道具栏消耗金币购买和使用道具。", highlight: '#conveyor-belt-container', trigger: 'button' },
+            { text: "锄头可以挖掉一格农田上的作物以便播种新的种子。", highlight: '#conveyor-belt-container', trigger: 'button' },
+            { text: "生长激素可以加速一格农田上的作物生长一天。", highlight: '#conveyor-belt-container', trigger: 'button' },
+            { text: "等你的播种全部完成后，点击页面下方按钮即可进入下一阶段。", highlight: '#conveyor-belt-container', trigger: 'button' },
+            { text: "注意，种下作物后，它们需要在湿润的土地上生长两天才能成熟哦！", highlight: '#conveyor-belt-container', trigger: 'button' },
+        ];
+        const TUTORIAL_DAY_ONE_HARVESTING = [
+            { text: "做得好！接下来，你要选择今天劳作的路线。", highlight: '#game-container', trigger: 'button' },
+            { text: "请从农田的边缘开始，按住手/鼠标，绘制你想经过的路线，松开后路线会被绘制完成。", highlight: '#conveyor-belt-container', trigger: 'button' },
+            { text: "每一步，你可以走到上/下/左/右相邻的格子中。", highlight: '#farm-grid', trigger: 'button' },
+            { text: "你经过的田地将被灌溉。请注意，湿润的土地才能够使作物生长哦。", highlight: '#farm-grid', trigger: 'button' },
+            { text: "同时，你可以沿这条路径收获成熟的作物，它们会自动售出变成金币。", highlight: '#farm-grid', trigger: 'button' },
+            { text: "在你规划的路径上，连续经过三个或三个以上相同的成熟作物时，它们才可以被你收获。", highlight: '#farm-grid', trigger: 'button' },
+            { text: "完成路径规划后，点击'开启新的一天'，湿润土地上的作物就会生长了。", highlight: '#farm-grid', trigger: 'button' },
+            { text: "接下来请选择今天的浇水（与收获）路径吧！ ", highlight: '#action-btn', trigger: 'button' },
+            
+        ];
+        const TUTORIAL_SPRINKLER = [
+            { text: "哦？看来昨晚罗宾为你的农场安装了一个新的洒水器！", highlight: '.sprinkler-img', trigger: 'button' },
+            { text: "洒水器会自动为它周围的8个地块浇水，你无需再为这些地块操心，但你不能从洒水器上走过去！", highlight: '.sprinkler-img', trigger: 'button' },
+            { text: "另外，由于管道需要定时维护，每隔几天它可能会更换到其他位置哦。", highlight: '.sprinkler-img', trigger: 'button' },
+        ];
 
-        // --- 游戏状态变量 ---
-        let farmGrid = [], conveyorSeeds = [], currentDay = 1;
+        let farmGrid = []; 
+        let conveyorSeeds = []; 
+        let currentDay = 1; 
         let gameState = {
-            phase: 'PLANTING',
-            selectedSeedIndex: null,
-            isPathing: false,
-            currentPath: [],
-            gold: 0,
-            activeTool: null,
-            // 新增：洒水器相关的状态
-            sprinklerCount: 0, // 当前洒水器数量
-            needsToPlaceFirstSprinkler: false, // 是否处于“等待放置第一个洒水器”的状态
-            needsToPlaceSecondSprinkler: false, // 是否处于“等待放置第二个洒水器”的状态
-            dayFirstSprinklerAppeared: 0, // 记录第一个洒水器出现的天数，用于计算移动间隔
-            daySecondSprinklerAppeared: 0, // 记录第二个洒水器出现的天数
+            phase: 'PLANTING', 
+            selectedSeedIndex: null, 
+            isPathing: false, 
+            currentPath: [], 
+            gold: 0, 
+            activeTool: null, 
+            sprinklerCount: 0, 
+            needsToPlaceFirstSprinkler: false, 
+            needsToPlaceSecondSprinkler: false, 
+            dayFirstSprinklerAppeared: 0, 
+            daySecondSprinklerAppeared: 0, 
         };
 
-        // --- DOM元素获取 ---
-        const gridElement = document.getElementById('farm-grid');
-        const conveyorElement = document.getElementById('conveyor-belt');
-        const dayCounterElement = document.getElementById('day-counter');
-        const seedCounterElement = document.getElementById('seed-counter');
-        const actionBtn = document.getElementById('action-btn');
-        const gameOverOverlay = document.getElementById('game-over-overlay');
-        const instructionsElement = document.getElementById('instructions');
-        const goldAmountElement = document.getElementById('gold-amount');
-        const shopContainer = document.getElementById('shop-container');
+        let isTutorialActive = false; 
+        let currentTutorialStep = 0; 
+        let activeTutorial = null; 
+        let activeTutorialKey = ''; 
+        
+        const gridElement = document.getElementById('farm-grid'); 
+        const conveyorElement = document.getElementById('conveyor-belt'); 
+        const dayCounterElement = document.getElementById('day-counter'); 
+        const seedCounterElement = document.getElementById('seed-counter'); 
+        const actionBtn = document.getElementById('action-btn'); 
+        const gameOverOverlay = document.getElementById('game-over-overlay'); 
+        const instructionsElement = document.getElementById('instructions'); 
+        const goldAmountElement = document.getElementById('gold-amount'); 
+        const shopContainer = document.getElementById('shop-container'); 
+        const tutorialOverlay = document.getElementById('tutorial-overlay'); 
+        const tutorialText = document.getElementById('tutorial-text'); 
+        const tutorialNextBtn = document.getElementById('tutorial-next-btn'); 
+        const tutorialSkipBtn = document.getElementById('tutorial-skip-btn'); 
 
-        // --- 核心游戏逻辑 ---
         function initGame() {
-            gridElement.innerHTML = '';
-            farmGrid = [];
-            for (let r = 0; r < GRID_SIZE; r++) {
-                farmGrid[r] = [];
-                for (let c = 0; c < GRID_SIZE; c++) {
+            gridElement.innerHTML = ''; 
+            gameState.sprinklerCount = 0;
+            gameState.needsToPlaceFirstSprinkler = false;
+            gameState.needsToPlaceSecondSprinkler = false;
+            gameState.dayFirstSprinklerAppeared = 0;
+            gameState.daySecondSprinklerAppeared = 0;
+            farmGrid = []; 
+
+            for (let r = 0; r < GRID_SIZE; r++) { 
+                farmGrid[r] = []; 
+                for (let c = 0; c < GRID_SIZE; c++) { 
                     farmGrid[r][c] = { crop: null, isWatered: false, hasSprinkler: false };
-                    const cell = document.createElement('div');
-                    cell.classList.add('cell');
-                    cell.dataset.row = r;
-                    cell.dataset.col = c;
+                    const cell = document.createElement('div'); 
+                    cell.classList.add('cell'); 
+                    cell.dataset.row = r; 
+                    cell.dataset.col = c; 
                     if (r === 0 || r === GRID_SIZE - 1 || c === 0 || c === GRID_SIZE - 1) {
-                        cell.classList.add('edge');
+                        cell.classList.add('edge'); 
                     }
-                    gridElement.appendChild(cell);
+                    gridElement.appendChild(cell); 
                 }
             }
-            addEventListeners();
-            addNewSeeds();
-            updatePhase('PLANTING');
-            updateGoldDisplay();
+            addEventListeners(); 
+            addNewSeeds(); 
+            updatePhase('PLANTING'); 
+            updateGoldDisplay(); 
         }
         
+        function startTutorial(tutorialData, storageKey) {
+            if (localStorage.getItem(storageKey)) return; // 已看过
+            isTutorialActive = true; 
+            activeTutorial = tutorialData; 
+            activeTutorialKey = storageKey; 
+            currentTutorialStep = -1; 
+            tutorialOverlay.style.display = 'flex'; 
+            nextTutorialStep(); 
+        }
+
+        function nextTutorialStep() {
+            const prevStep = activeTutorial[currentTutorialStep]; 
+            if (prevStep && prevStep.highlight) { 
+                document.querySelectorAll(prevStep.highlight).forEach(el => el.classList.remove('tutorial-highlight'));
+            }
+            currentTutorialStep++; 
+            if (currentTutorialStep >= activeTutorial.length) { 
+                endTutorial(); 
+                return; 
+            }
+            const step = activeTutorial[currentTutorialStep]; 
+            tutorialText.textContent = step.text; 
+            if (step.highlight) { 
+                setTimeout(() => { 
+                    document.querySelectorAll(step.highlight).forEach(el => el.classList.add('tutorial-highlight'));
+                }, 100);
+            }
+            tutorialNextBtn.style.display = (step.trigger === 'button') ? 'inline-block' : 'none';
+        }
+        
+        function endTutorial() {
+            if (!isTutorialActive) return; 
+            isTutorialActive = false; 
+            const lastStep = activeTutorial[currentTutorialStep - 1] || activeTutorial[currentTutorialStep];
+            if (lastStep && lastStep.highlight) {
+                document.querySelectorAll(lastStep.highlight).forEach(el => el.classList.remove('tutorial-highlight'));
+            }
+            tutorialOverlay.style.display = 'none'; 
+            localStorage.setItem(activeTutorialKey, 'true'); 
+        }
+
         function updatePhase(newPhase) {
-            gameState.phase = newPhase;
+            gameState.phase = newPhase; 
             gameState.isPathing = false;
             gameState.currentPath = [];
             gameState.activeTool = null;
+            document.body.classList.remove('tool-active'); 
+            gridElement.className = 'farm-grid'; 
+            gridElement.classList.add(newPhase.toLowerCase() + '-phase'); 
             
-            document.body.classList.remove('tool-active');
-            gridElement.className = 'farm-grid';
-            gridElement.classList.add(newPhase.toLowerCase() + '-phase');
-            
-            if (newPhase === 'PLANTING') {
-                actionBtn.textContent = '完成播种';
-                actionBtn.disabled = false;
-                instructionsElement.innerHTML = "<strong>阶段一：播种/购买</strong><br>选择种子播种，或选择道具使用。";
-                shopContainer.style.display = 'flex';
-            } else if (newPhase === 'HARVESTING') {
-                actionBtn.textContent = '收获路径';
-                actionBtn.disabled = true;
-                instructionsElement.innerHTML = "<strong>阶段二：收获/浇水</strong><br>拖动规划路径以收获作物并为土地浇水。";
-                shopContainer.style.display = 'none';
-            } else if (newPhase === 'DAY_END') {
-                actionBtn.textContent = '开启新的一天';
-                actionBtn.disabled = false;
-                instructionsElement.innerHTML = "一天结束了！点击按钮开始新的一天。";
-                shopContainer.style.display = 'none';
+            if (newPhase === 'PLANTING') { 
+                actionBtn.textContent = '完成播种'; 
+                actionBtn.disabled = false; 
+                instructionsElement.innerHTML = "<strong>阶段一：播种/购买</strong><br>选择种子播种，或选择道具使用。"; 
+                shopContainer.style.display = 'flex'; 
+                if (currentDay === 1) { 
+                    startTutorial(TUTORIAL_DAY_ONE_PLANTING, 'tutorial_day_one_plan_seen'); 
+                }
+            } else if (newPhase === 'HARVESTING') { 
+                actionBtn.textContent = '规划路径'; 
+                actionBtn.disabled = true; 
+                instructionsElement.innerHTML = "<strong>阶段二：浇水/收获</strong><br>拖动规划路径以为土地浇水并收获连续的作物。"; 
+                shopContainer.style.display = 'none'; 
+                if (currentDay === 1) { 
+                    startTutorial(TUTORIAL_DAY_ONE_HARVESTING, 'tutorial_day_one_harvest_seen'); 
+                }
+            } else if (newPhase === 'DAY_END') { 
+                actionBtn.textContent = '开启新的一天'; 
+                actionBtn.disabled = false; 
+                instructionsElement.innerHTML = "一天结束了！点击按钮开始新的一天。"; 
+                shopContainer.style.display = 'none'; 
             }
-            updateUI();
+            updateUI(); 
         }
 
         function addNewSeeds() {
-            for (let i = 0; i < SEEDS_PER_DAY; i++) {
+            for (let i = 0; i < SEEDS_PER_DAY; i++) { 
                 conveyorSeeds.push(CROP_TYPES[Math.floor(Math.random() * CROP_TYPES.length)]);
             }
         }
 
         function updateUI() {
-            gridElement.childNodes.forEach((cell, index) => {
-                const r = Math.floor(index / GRID_SIZE);
-                const c = index % GRID_SIZE;
-                const tile = farmGrid[r][c];
-                const crop = tile.crop;
-
-                cell.innerHTML = '';
-                cell.classList.remove('path');
+            gridElement.childNodes.forEach((cell, index) => { 
+                const r = Math.floor(index / GRID_SIZE); 
+                const c = index % GRID_SIZE; 
+                const tile = farmGrid[r][c]; 
+                const crop = tile.crop; 
+                cell.innerHTML = ''; 
+                cell.classList.remove('path'); 
                 cell.classList.toggle('empty', crop === null && !tile.hasSprinkler);
                 cell.classList.toggle('watered', tile.isWatered);
-
                 if (gameState.currentPath.some(p => p.r === r && p.c === c)) {
                     cell.classList.add('path');
                 }
-
                 if (tile.hasSprinkler) {
-                    const sprinklerImg = document.createElement('img');
-                    sprinklerImg.src = 'pic/Quality_Sprinkler.png';
-                    sprinklerImg.classList.add('sprinkler-img');
-                    cell.appendChild(sprinklerImg);
-                } else if (crop) {
-                    const cropDiv = document.createElement('div');
-                    cropDiv.classList.add('crop-container');
-                    
-                    if (USE_EMOJI_MODE) {
-                        cropDiv.textContent = crop.emoji;
-                    } else {
-                        const cropImg = document.createElement('img');
+                    const sprinklerImg = document.createElement('img'); 
+                    sprinklerImg.src = 'pic/Quality_Sprinkler.png'; 
+                    sprinklerImg.classList.add('sprinkler-img'); 
+                    cell.appendChild(sprinklerImg); 
+                } else if (crop) { 
+                    const cropDiv = document.createElement('div'); 
+                    cropDiv.classList.add('crop-container'); 
+                    if (USE_EMOJI_MODE) { 
+                        cropDiv.textContent = crop.emoji; 
+                    } else { 
+                        const cropImg = document.createElement('img'); 
                         if (crop.daysToMature === 0) {
                             cropImg.src = crop.img_mature;
                         } else if (crop.daysToMature === 1) {
@@ -360,61 +536,55 @@
                         } else {
                             cropImg.src = crop.img_stage_0;
                         }
-                        cropDiv.appendChild(cropImg);
+                        cropDiv.appendChild(cropImg); 
                     }
-                    
-                    if (crop.daysToMature === 0) {
-                         cropDiv.classList.add('mature');
+                    if (crop.daysToMature === 0) { 
+                         cropDiv.classList.add('mature'); 
                     }
-                    cell.appendChild(cropDiv);
+                    cell.appendChild(cropDiv); 
                 }
             });
-            
-            conveyorElement.innerHTML = '';
-            conveyorSeeds.forEach((seed, index) => {
-                const seedPacket = document.createElement('div');
-                seedPacket.classList.add('seed-packet');
-                
-                if (USE_EMOJI_MODE) {
+            conveyorElement.innerHTML = ''; 
+            conveyorSeeds.forEach((seed, index) => { 
+                const seedPacket = document.createElement('div'); 
+                seedPacket.classList.add('seed-packet'); 
+                if (USE_EMOJI_MODE) { 
                     seedPacket.textContent = seed.emoji;
-                } else {
+                } else { 
                     const seedImg = document.createElement('img');
                     seedImg.src = seed.img_seed;
                     seedPacket.appendChild(seedImg);
                 }
-
-                seedPacket.dataset.index = index;
-                if (index === gameState.selectedSeedIndex) {
-                    seedPacket.classList.add('selected');
+                seedPacket.dataset.index = index; 
+                if (index === gameState.selectedSeedIndex) { 
+                    seedPacket.classList.add('selected'); 
                 }
-                conveyorElement.appendChild(seedPacket);
+                conveyorElement.appendChild(seedPacket); 
             });
-
             dayCounterElement.textContent = `第 ${currentDay} 天`;
             seedCounterElement.textContent = `种子: ${conveyorSeeds.length}/${MAX_SEEDS}`;
             seedCounterElement.style.color = conveyorSeeds.length > MAX_SEEDS ? 'red' : 'inherit';
-            
-            updateShopUI();
+            updateShopUI(); 
         }
         
         function updateGoldDisplay() {
-            goldAmountElement.textContent = gameState.gold;
-            updateShopUI();
+            goldAmountElement.textContent = gameState.gold; 
+            updateShopUI(); 
         }
         
         function updateShopUI() {
-            document.querySelectorAll('.shop-item').forEach(item => {
-                const toolId = item.dataset.tool;
-                const toolData = SHOP_ITEMS[toolId];
-                if (gameState.gold < toolData.cost) {
-                    item.classList.add('disabled');
-                } else {
-                    item.classList.remove('disabled');
+            document.querySelectorAll('.shop-item').forEach(item => { 
+                const toolId = item.dataset.tool; 
+                const toolData = SHOP_ITEMS[toolId]; 
+                if (gameState.gold < toolData.cost) { 
+                    item.classList.add('disabled'); 
+                } else { 
+                    item.classList.remove('disabled'); 
                 }
-                if (gameState.activeTool === toolId) {
-                    item.classList.add('selected');
+                if (gameState.activeTool === toolId) { 
+                    item.classList.add('selected'); 
                 } else {
-                    item.classList.remove('selected');
+                    item.classList.remove('selected'); 
                 }
             });
         }
@@ -422,152 +592,185 @@
         function addEventListeners() {
             conveyorElement.addEventListener('click', handleConveyorClick);
             gridElement.addEventListener('click', handleGridClick);
-            
             gridElement.addEventListener('mousedown', startHarvestDraw);
-            gridElement.addEventListener('touchstart', startHarvestDraw, { passive: false });
+            gridElement.addEventListener('touchstart', startHarvestDraw, { passive: false }); 
             gridElement.addEventListener('mouseover', continueHarvestDraw);
-            gridElement.addEventListener('touchmove', continueHarvestDraw, { passive: false });
+            gridElement.addEventListener('touchmove', continueHarvestDraw, { passive: false }); 
             document.addEventListener('mouseup', endHarvestDraw);
-            document.addEventListener('touchend', endHarvestDraw);
-
+            document.addEventListener('touchend', endHarvestDraw); 
             actionBtn.addEventListener('click', handleActionButton);
             shopContainer.addEventListener('click', handleShopClick);
+            tutorialNextBtn.addEventListener('click', () => {
+                if (isTutorialActive && activeTutorial[currentTutorialStep]?.trigger === 'button') {
+                    nextTutorialStep();
+                }
+            });
+            tutorialSkipBtn.addEventListener('click', endTutorial);
         }
 
         function handleGridClick(e) {
-            const cell = e.target.closest('.cell');
-            if (!cell) return;
-            if (gameState.phase === 'PLANTING' && gameState.activeTool) {
-                useActiveTool(cell);
-            } else if (gameState.phase === 'PLANTING') {
-                handlePlantingClick(cell);
+            const cell = e.target.closest('.cell'); 
+            if (!cell) return; 
+            if (gameState.phase === 'PLANTING' && gameState.activeTool) { 
+                useActiveTool(cell); 
+            } else if (gameState.phase === 'PLANTING') { 
+                handlePlantingClick(cell); 
             }
         }
         
         function handleShopClick(e) {
-            const item = e.target.closest('.shop-item');
-            if (!item || item.classList.contains('disabled')) return;
-            const toolId = item.dataset.tool;
-            if (gameState.activeTool === toolId) {
-                gameState.activeTool = null;
+            const item = e.target.closest('.shop-item'); 
+            if (!item || item.classList.contains('disabled')) return; 
+            const toolId = item.dataset.tool; 
+            if (gameState.activeTool === toolId) { 
+                gameState.activeTool = null; 
                 document.body.classList.remove('tool-active');
-            } else {
-                gameState.activeTool = toolId;
-                gameState.selectedSeedIndex = null;
+            } else { 
+                gameState.activeTool = toolId; 
+                gameState.selectedSeedIndex = null; 
                 document.body.classList.add('tool-active');
             }
-            updateUI();
+            updateUI(); 
         }
 
         function useActiveTool(cell) {
-            const toolId = gameState.activeTool;
-            const toolData = SHOP_ITEMS[toolId];
-            const r = parseInt(cell.dataset.row);
+            const toolId = gameState.activeTool; 
+            const toolData = SHOP_ITEMS[toolId]; 
+            const r = parseInt(cell.dataset.row); 
             const c = parseInt(cell.dataset.col);
-            const tile = farmGrid[r][c];
-
-            if (gameState.gold < toolData.cost) {
-                alert('金币不足!');
+            const tile = farmGrid[r][c]; 
+            if (gameState.gold < toolData.cost) { 
+                alert('金币不足!'); 
                 return;
             }
-
-            let toolUsed = false;
-            switch (toolId) {
-                case 'hoe':
-                    if (tile.crop) {
-                        tile.crop = null;
-                        toolUsed = true;
+            let toolUsed = false; 
+            switch (toolId) { 
+                case 'hoe': 
+                    if (tile.crop) { 
+                        tile.crop = null; 
+                        toolUsed = true; 
                     }
                     break;
-                case 'speed-gro':
-                    if (tile.crop && tile.crop.daysToMature > 0) {
-                        tile.crop.daysToMature--;
-                        toolUsed = true;
+                case 'speed-gro': 
+                    if (tile.crop && tile.crop.daysToMature > 0) { 
+                        tile.crop.daysToMature--; 
+                        toolUsed = true; 
                     }
                     break;
             }
-
-            if (toolUsed) {
-                gameState.gold -= toolData.cost;
-                gameState.activeTool = null;
+            if (toolUsed) { 
+                gameState.gold -= toolData.cost; 
+                gameState.activeTool = null; 
                 document.body.classList.remove('tool-active');
-                updateGoldDisplay();
-                updateUI();
+                updateGoldDisplay(); 
+                updateUI(); 
             }
         }
 
         function handleConveyorClick(e) {
-            if (gameState.phase !== 'PLANTING') return;
-            const packet = e.target.closest('.seed-packet');
-            if (!packet) return;
-            const index = parseInt(packet.dataset.index);
-            gameState.activeTool = null;
+            if (gameState.phase !== 'PLANTING') return; 
+            if (isTutorialActive && activeTutorial[currentTutorialStep]?.trigger !== 'selectSeed') return;
+            const packet = e.target.closest('.seed-packet'); 
+            if (!packet) return; 
+            const index = parseInt(packet.dataset.index); 
+            gameState.activeTool = null; 
             document.body.classList.remove('tool-active');
             gameState.selectedSeedIndex = (gameState.selectedSeedIndex === index) ? null : index;
-            updateUI();
+            updateUI(); 
+            if (isTutorialActive && activeTutorial[currentTutorialStep]?.trigger === 'selectSeed') { 
+                nextTutorialStep(); 
+            }
         }
 
         function handlePlantingClick(cell) {
-            const r = parseInt(cell.dataset.row);
+            const r = parseInt(cell.dataset.row); 
             const c = parseInt(cell.dataset.col);
             if (gameState.selectedSeedIndex === null || farmGrid[r][c].crop !== null || farmGrid[r][c].hasSprinkler) return;
-            const seedToPlant = conveyorSeeds[gameState.selectedSeedIndex];
-            farmGrid[r][c].crop = { ...seedToPlant, daysToMature: 2 };
-            conveyorSeeds.splice(gameState.selectedSeedIndex, 1);
-            gameState.selectedSeedIndex = null;
-            updateUI();
+            const seedToPlant = conveyorSeeds[gameState.selectedSeedIndex]; 
+            farmGrid[r][c].crop = { ...seedToPlant, daysToMature: 2 }; 
+            conveyorSeeds.splice(gameState.selectedSeedIndex, 1); 
+            gameState.selectedSeedIndex = null; 
+            if (isTutorialActive && activeTutorial[currentTutorialStep]?.trigger === 'plantSeed') { 
+                updateUI();
+                setTimeout(nextTutorialStep, 100); 
+            } else {
+                updateUI(); 
+            }
         }
 
         function startHarvestDraw(e) {
-            if (gameState.phase !== 'HARVESTING') return;
-            e.preventDefault();
-            const cell = e.target.closest('.cell');
-            if (!cell || !cell.classList.contains('edge')) return;
-            gameState.isPathing = true;
-            const r = parseInt(cell.dataset.row);
+            if (isTutorialActive && activeTutorial[currentTutorialStep]?.trigger !== 'drawPath') return;
+            if (gameState.phase !== 'HARVESTING') return; 
+            e.preventDefault(); 
+            const cell = e.target.closest('.cell'); 
+            if (!cell || !cell.classList.contains('edge')) return; 
+            gameState.isPathing = true; 
+            const r = parseInt(cell.dataset.row); 
             const c = parseInt(cell.dataset.col);
-            gameState.currentPath = [{ r, c }];
-            updateUI();
+            gameState.currentPath = [{ r, c }]; 
+            updateUI(); 
         }
 
         function continueHarvestDraw(e) {
-            if (!gameState.isPathing) return;
+            if (!gameState.isPathing) return; 
             e.preventDefault();
-            let targetCell = null;
-            if (e.touches && e.touches[0]) {
+            let targetCell = null; 
+            if (e.touches && e.touches[0]) { 
                 const touch = e.touches[0];
                 const element = document.elementFromPoint(touch.clientX, touch.clientY);
                 if (element) {
                     targetCell = element.closest('.cell');
                 }
-            } else {
+            } else { 
                 targetCell = e.target.closest('.cell');
             }
-            if (!targetCell) return;
-            const r = parseInt(targetCell.dataset.row);
+            if (!targetCell) return; 
+            const r = parseInt(targetCell.dataset.row); 
             const c = parseInt(targetCell.dataset.col);
-            if (farmGrid[r][c].hasSprinkler) return;
-            const lastPos = gameState.currentPath[gameState.currentPath.length - 1];
+            if (farmGrid[r][c].hasSprinkler) return; 
+            const lastPos = gameState.currentPath[gameState.currentPath.length - 1]; 
             const isAdjacent = (Math.abs(r - lastPos.r) === 1 && c === lastPos.c) || (Math.abs(c - lastPos.c) === 1 && r === lastPos.r);
             const isNotVisited = !gameState.currentPath.some(p => p.r === r && p.c === c);
-            if (isAdjacent && isNotVisited) {
-                gameState.currentPath.push({ r, c });
-                updateUI();
+            if (isAdjacent && isNotVisited) { 
+                gameState.currentPath.push({ r, c }); 
+                updateUI(); 
             }
         }
 
         function endHarvestDraw(e) {
-            if (!gameState.isPathing) return;
-            gameState.isPathing = false;
-            if (gameState.currentPath.length > 0) {
-                finalizeHarvestPath();
+            if (!gameState.isPathing) return; 
+            gameState.isPathing = false; 
+            
+            if (gameState.currentPath.length > 0) { 
+                actionBtn.disabled = false; 
+                actionBtn.textContent = '确认路径'; 
+                instructionsElement.innerHTML = "<strong>路径已规划</strong><br>你可以点击'确认路径'，或在农田上重新开始绘制。";
+            } else {
+                actionBtn.disabled = true;
+                actionBtn.textContent = '规划路径';
+            }
+
+            if (isTutorialActive && activeTutorial[currentTutorialStep]?.trigger === 'drawPath') { 
+                setTimeout(nextTutorialStep, 500); 
             }
         }
 
         function handleActionButton() {
-            if (gameState.phase === 'PLANTING') {
+            if (isTutorialActive && activeTutorial[currentTutorialStep]?.trigger === 'actionButton') { 
+                if (gameState.phase === 'PLANTING') {
+                    updatePhase('HARVESTING');
+                } else if (gameState.phase === 'DAY_END') {
+                    startNewDay();
+                }
+                return;
+            }
+            if (gameState.phase === 'PLANTING') { 
                 updatePhase('HARVESTING');
-            } else if (gameState.phase === 'DAY_END') {
+            } else if (gameState.phase === 'HARVESTING') { 
+                if (gameState.currentPath.length > 0) {
+                    finalizeHarvestPath(); 
+                }
+            } else if (gameState.phase === 'DAY_END') { 
                 startNewDay();
             }
         }
@@ -576,46 +779,56 @@
             gameState.currentPath.forEach(pos => {
                 farmGrid[pos.r][pos.c].isWatered = true;
             });
-            harvestCropsByPath(gameState.currentPath);
-            setTimeout(() => {
-                updatePhase('DAY_END');
+            harvestCropsByPath(gameState.currentPath); 
+            setTimeout(() => { 
+                updatePhase('DAY_END'); 
             }, 300);
         }
 
         function harvestCropsByPath(path) {
-            const toHarvest = new Set();
-            if (path.length < 3) return;
-            let chain = [];
-            function checkChain() {
-                if (chain.length >= 3) {
-                    chain.forEach(pos => toHarvest.add(`${pos.r}-${pos.c}`));
+            const toHarvest = new Set(); 
+            if (path.length < 3) return; 
+            let chain = []; 
+            function checkChain() { 
+                if (chain.length >= 3) { 
+                    chain.forEach(pos => toHarvest.add(`${pos.r}-${pos.c}`)); 
                 }
             }
-            for (const pos of path) {
-                const crop = farmGrid[pos.r][pos.c].crop;
-                const firstChainCrop = chain.length > 0 ? farmGrid[chain[0].r][chain[0].c].crop : null;
+            for (const pos of path) { 
+                const crop = farmGrid[pos.r][pos.c].crop; 
+                const firstChainCrop = chain.length > 0 ? farmGrid[chain[0].r][chain[0].c].crop : null; 
                 if (crop && crop.daysToMature === 0 && (chain.length === 0 || crop.id === firstChainCrop.id)) {
-                    chain.push(pos);
-                } else {
-                    checkChain();
+                    chain.push(pos); 
+                } else { 
+                    checkChain(); 
                     chain = (crop && crop.daysToMature === 0) ? [pos] : [];
                 }
             }
-            checkChain();
-            toHarvest.forEach(posString => {
-                const [r, c] = posString.split('-').map(Number);
-                const harvestedCrop = farmGrid[r][c].crop;
+            checkChain(); 
+            toHarvest.forEach(posString => { 
+                const [r, c] = posString.split('-').map(Number); 
+                const harvestedCrop = farmGrid[r][c].crop; 
                 if (harvestedCrop) {
-                    gameState.gold += harvestedCrop.goldValue;
+                    gameState.gold += harvestedCrop.goldValue; 
                 }
-                farmGrid[r][c].crop = null;
+                farmGrid[r][c].crop = null; 
             });
-            updateGoldDisplay();
+            updateGoldDisplay(); 
         }
-
-        // --- 新增：洒水器相关的所有辅助函数 ---
-
-        // 获取所有洒水器的位置
+        
+        function tryPlaceNewSprinkler() {
+            const validSpots = getValidSprinklerSpots(); 
+            if (validSpots.length > 0) { 
+                const spot = validSpots[Math.floor(Math.random() * validSpots.length)]; 
+                farmGrid[spot.r][spot.c].hasSprinkler = true; 
+                if (gameState.sprinklerCount === 0) { 
+                    setTimeout(() => startTutorial(TUTORIAL_SPRINKLER, 'tutorial_sprinkler_seen'), 500); 
+                }
+                return true; 
+            }
+            return false; 
+        }
+        
         function getAllSprinklerLocations() {
             const locations = [];
             for (let r = 0; r < GRID_SIZE; r++) {
@@ -628,17 +841,13 @@
             return locations;
         }
 
-        // 获取所有可以放置洒水器的有效空位
         function getValidSprinklerSpots() {
             const validSpots = [];
             const existingSprinklers = getAllSprinklerLocations();
-            // 遍历所有非边缘地块
-            for (let r = 1; r < GRID_SIZE - 1; r++) {
+            for (let r = 1; r < GRID_SIZE - 1; r++) { 
                 for (let c = 1; c < GRID_SIZE - 1; c++) {
                     const tile = farmGrid[r][c];
-                    // 检查地块是否为空（无作物且无洒水器）
-                    if (tile.crop === null && !tile.hasSprinkler) {
-                        // 检查该位置是否与已存在的洒水器相邻
+                    if (tile.crop === null && !tile.hasSprinkler) { 
                         const isAdjacentToOtherSprinkler = existingSprinklers.some(sprinklerPos => 
                             Math.max(Math.abs(r - sprinklerPos.r), Math.abs(c - sprinklerPos.c)) <= 1
                         );
@@ -651,139 +860,107 @@
             return validSpots;
         }
 
-        // 尝试放置一个新洒水器
-        function tryPlaceNewSprinkler() {
-            const validSpots = getValidSprinklerSpots();
-            if (validSpots.length > 0) {
-                const spot = validSpots[Math.floor(Math.random() * validSpots.length)];
-                farmGrid[spot.r][spot.c].hasSprinkler = true;
-                return true; // 表示成功放置
-            }
-            return false; // 表示没有空位，放置失败
-        }
-        
-        // 尝试移动现有洒水器
         function tryMoveSprinklers() {
-            const oldLocations = getAllSprinklerLocations();
-            // 临时移除所有洒水器
+            const oldLocations = getAllSprinklerLocations(); 
             oldLocations.forEach(pos => {
                 farmGrid[pos.r][pos.c].hasSprinkler = false;
             });
-
             const newLocations = [];
             let possible = true;
-
             for (let i = 0; i < oldLocations.length; i++) {
-                const validSpots = getValidSprinklerSpots(); // 每次查找都排除已选新位置
-                if (validSpots.length === 0) {
-                    possible = false; // 没有可移动的位置了
+                const validSpots = getValidSprinklerSpots(); 
+                if (validSpots.length === 0) { 
+                    possible = false; 
                     break;
                 }
-                const newSpot = validSpots[Math.floor(Math.random() * validSpots.length)];
-                farmGrid[newSpot.r][newSpot.c].hasSprinkler = true; // 预先占据新位置
+                const newSpot = validSpots[Math.floor(Math.random() * validSpots.length)]; 
+                farmGrid[newSpot.r][newSpot.c].hasSprinkler = true; 
                 newLocations.push(newSpot);
             }
-            
-            // 如果移动失败（比如只有两个空位，无法不相邻地移动两个洒水器），则恢复原位
-            if (!possible) {
-                newLocations.forEach(pos => { farmGrid[pos.r][pos.c].hasSprinkler = false; }); // 清空失败的尝试
-                oldLocations.forEach(pos => { farmGrid[pos.r][pos.c].hasSprinkler = true; }); // 恢复原位
+            if (!possible) { 
+                newLocations.forEach(pos => { farmGrid[pos.r][pos.c].hasSprinkler = false; });
+                oldLocations.forEach(pos => { farmGrid[pos.r][pos.c].hasSprinkler = true; });
             }
         }
 
-        // 洒水器自动浇水逻辑
         function applySprinklerWatering() {
-            const sprinklerLocations = getAllSprinklerLocations();
-            sprinklerLocations.forEach(pos => {
+            const sprinklerLocations = getAllSprinklerLocations(); 
+            sprinklerLocations.forEach(pos => { 
                 for (let dr = -1; dr <= 1; dr++) {
                     for (let dc = -1; dc <= 1; dc++) {
-                        // 注意：这里我们让洒水器也为自己所在的格子“浇水”，虽然它不能种东西，但逻辑上更统一
                         const nr = pos.r + dr;
                         const nc = pos.c + dc;
                         if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE) {
-                            farmGrid[nr][nc].isWatered = true;
+                            farmGrid[nr][nc].isWatered = true; 
                         }
                     }
                 }
             });
         }
         
-        // 管理所有洒水器生成和移动的复杂逻辑
         function handleSprinklerLogic() {
-            // 检查是否需要设置“待放置”状态
             if (currentDay > 10 && gameState.sprinklerCount === 0 && !gameState.dayFirstSprinklerAppeared) {
                 gameState.needsToPlaceFirstSprinkler = true;
             }
             if (currentDay > 25 && gameState.sprinklerCount === 1 && !gameState.daySecondSprinklerAppeared) {
                 gameState.needsToPlaceSecondSprinkler = true;
             }
-
-            // 如果需要放置第一个洒水器
             if (gameState.needsToPlaceFirstSprinkler) {
-                if (tryPlaceNewSprinkler()) {
-                    gameState.sprinklerCount = 1;
-                    gameState.needsToPlaceFirstSprinkler = false;
-                    gameState.dayFirstSprinklerAppeared = currentDay;
+                if (tryPlaceNewSprinkler()) { 
+                    gameState.sprinklerCount = 1; 
+                    gameState.needsToPlaceFirstSprinkler = false; 
+                    gameState.dayFirstSprinklerAppeared = currentDay; 
                 }
-                return; // 放置后，当天不进行移动操作
+                return; 
             }
-
-            // 如果需要放置第二个洒水器
             if (gameState.needsToPlaceSecondSprinkler) {
-                if (tryPlaceNewSprinkler()) {
-                    gameState.sprinklerCount = 2;
+                if (tryPlaceNewSprinkler()) { 
+                    gameState.sprinklerCount = 2; 
                     gameState.needsToPlaceSecondSprinkler = false;
                     gameState.daySecondSprinklerAppeared = currentDay;
                 }
-                return; // 放置后，当天不进行移动操作
+                return;
             }
-
-            // 如果不需要放置，则检查是否需要移动
             const dayOfFirst = gameState.dayFirstSprinklerAppeared;
             const dayOfSecond = gameState.daySecondSprinklerAppeared;
-
-            // 两个洒水器的情况
             if (gameState.sprinklerCount === 2 && dayOfSecond > 0 && (currentDay - dayOfSecond) > 0 && (currentDay - dayOfSecond) % 5 === 0) {
                 tryMoveSprinklers();
             } 
-            // 只有一个洒水器的情况
             else if (gameState.sprinklerCount === 1 && dayOfFirst > 0 && (currentDay - dayOfFirst) > 0 && (currentDay - dayOfFirst) % 5 === 0) {
                 tryMoveSprinklers();
             }
         }
 
-
         function startNewDay() {
-            currentDay++;
+            currentDay++; 
             for (let r = 0; r < GRID_SIZE; r++) {
                 for (let c = 0; c < GRID_SIZE; c++) {
                     const tile = farmGrid[r][c];
                     if (tile.crop && tile.crop.daysToMature > 0 && tile.isWatered) {
-                        tile.crop.daysToMature--;
+                        tile.crop.daysToMature--; 
                     }
-                    tile.isWatered = false;
+                    tile.isWatered = false; 
                 }
             }
-
-            // --- 修改点：在这里执行所有洒水器相关的逻辑 ---
-            handleSprinklerLogic();
-            applySprinklerWatering();
-            // ------------------------------------
-
-            addNewSeeds();
-            if (conveyorSeeds.length > MAX_SEEDS) {
-                gameOver();
+            handleSprinklerLogic(); 
+            applySprinklerWatering(); 
+            addNewSeeds(); 
+            if (conveyorSeeds.length > MAX_SEEDS) { 
+                gameOver(); 
                 return;
             }
-            updatePhase('PLANTING');
+            
+            if (isTutorialActive && activeTutorial[currentTutorialStep]?.trigger === 'actionButton') { 
+                nextTutorialStep();
+            }
+            updatePhase('PLANTING'); 
         }
         
-
         function gameOver() {
-            gameOverOverlay.style.display = 'flex';
+            gameOverOverlay.style.display = 'flex'; 
         }
 
-        initGame();
+        initGame(); 
     </script>
 </body>
 </html>
