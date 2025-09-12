@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星露谷物语：播种与规划 (完整最终版)</title>
+    <title>星露谷物语：播种与规划</title>
     <style>
         :root {
             --stardew-brown: #8b5a2b;
@@ -624,20 +624,25 @@
             draggedSeedElement.style.zIndex = '1000';
             draggedSeedElement.style.pointerEvents = 'none';
             draggedSeedElement.style.opacity = '0.7';
-            document.body.appendChild(draggedSeedElement);
-
+            
+            draggedSeedElement.style.left = '0px';
+            draggedSeedElement.style.top = '0px'; 
+            
             const touch = e.touches[0];
-            draggedSeedElement.style.left = (touch.clientX - draggedSeedElement.offsetWidth / 2) + 'px';
-            draggedSeedElement.style.top = (touch.clientY - draggedSeedElement.offsetHeight / 2) + 'px';
+            const initialX = touch.clientX - draggedSeedElement.offsetWidth / 2;
+            const initialY = touch.clientY - draggedSeedElement.offsetHeight / 2;
+            draggedSeedElement.style.transform = `translate3d(${initialX}px, ${initialY}px, 0)`;
+
+            document.body.appendChild(draggedSeedElement);
         }
 
         function handleTouchMove(e) {
             if (!isTouchDragging || !draggedSeedElement) return;
             e.preventDefault();
-
             const touch = e.touches[0];
-            draggedSeedElement.style.left = (touch.clientX - draggedSeedElement.offsetWidth / 2) + 'px';
-            draggedSeedElement.style.top = (touch.clientY - draggedSeedElement.offsetHeight / 2) + 'px';
+            const newX = touch.clientX - draggedSeedElement.offsetWidth / 2;
+            const newY = touch.clientY - draggedSeedElement.offsetHeight / 2;
+            draggedSeedElement.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
         }
 
         function handleTouchEnd(e) {
