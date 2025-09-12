@@ -401,6 +401,11 @@
         let currentTutorialStep = 0;
         let activeTutorial = null;
         let activeTutorialKey = '';
+
+        /*phone-drag*/
+        let isTouchDragging = false;
+        let draggedSeedElement = null;
+        let draggedSeedIndex = null;
         
         const gridElement = document.getElementById('farm-grid');
         const conveyorElement = document.getElementById('conveyor-belt');
@@ -605,6 +610,60 @@
             goldAmountElement.textContent = gameState.gold;
             updateShopUI();
         }
+
+        function handleTouchStart(e) {
+            const packet = e.target.closest('.seed-packet');
+            if (!packet) return;
+
+            isTouchDragging = true;
+            draggedSeedIndex = packet.dataset.index;
+
+            draggedSeedElement = packet.cloneNode(true);
+            draggedSeedElement.style.position = 'absolute';
+            draggedSeedElement.style.zIndex = '1000';
+            draggedSeedElement.style.pointerEvents = 'none';
+            draggedSeedElement.style.opacity = '0.7';
+            document.body.appendChild(draggedSeedElement);
+
+            const touch = e.touches[0];
+            draggedSeedElement.style.left = (touch.clientX - draggedSeedElement.offsetWidth / 2) + 'px';
+            draggedSeedElement.style.top = (touch.clientY - draggedSeedElement.offsetHeight / 2) + 'px';
+        }
+
+        function handleTouchMove(e) {
+            if (!isTouchDragging || !draggedSeedElement) return;
+            e.preventDefault();
+
+            const touch = e.touches[0];
+            draggedSeedElement.style.left = (touch.clientX - draggedSeedElement.offsetWidth / 2) + 'px';
+            draggedSeedElement.style.top = (touch.clientY - draggedSeedElement.offsetHeight / 2) + 'px';
+        }
+
+        function handleTouchEnd(e) {
+            if (!isTouchDragging || !draggedSeedElement) return;
+
+            const touch = e.changedTouches[0];
+            const dropTarget = document.elementFromPoint(touch.clientX, touch.clientY);
+            const cell = dropTarget ? dropTarget.closest('.cell') : null;
+
+            if (cell) {
+                const r = parseInt(cell.dataset.row);
+                const c = parseInt(cell.dataset.col);
+
+                if (farmGrid[r][c].crop === null && !farmGrid[r][c].hasSprinkler) {
+                    const seedToPlant = conveyorSeeds[draggedSeedIndex];
+                    farmGrid[r][c].crop = { ...seedToPlant, daysToMature: 2 };
+                    conveyorSeeds.splice(draggedSeedIndex, 1);
+                    gameState.selectedSeedIndex = null;
+                    updateUI();
+                }
+            }
+
+            document.body.removeChild(draggedSeedElement);
+            isTouchDragging = false;
+            draggedSeedElement = null;
+            draggedSeedIndex = null;
+        }
         
         function updateShopUI() {
             document.querySelectorAll('.shop-item').forEach(item => {
@@ -627,6 +686,9 @@
             conveyorElement.addEventListener('dragstart', handleDragStart);
             gridElement.addEventListener('dragover', handleDragOver);
             gridElement.addEventListener('drop', handleDrop);
+            conveyorElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
             conveyorElement.addEventListener('click', handleConveyorClick);
             gridElement.addEventListener('click', handleGridClick);
             gridElement.addEventListener('mousedown', startHarvestDraw);
